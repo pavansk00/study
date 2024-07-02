@@ -1,0 +1,74 @@
+
+
+Tokenization in NLP
+
+Tokenization is a fundamental concept in Natural Language Processing (NLP). It involves splitting text into smaller units called tokens. Tokens can be words, subwords, or characters, depending on the granularity required for the task. Here are some key aspects of tokenization:
+
+## 1. Word Tokenization
+- **Definition**: Splitting text into individual words.
+- **Example**: 
+  ```
+  "Natural Language Processing is fascinating" 
+  → 
+  ["Natural", "Language", "Processing", "is", "fascinating"]
+  ```
+- **Use Case**: Common in tasks like sentiment analysis, text classification, and information retrieval.
+
+## 2. Subword Tokenization
+- **Definition**: Splitting text into smaller meaningful units like prefixes, suffixes, or even character sequences.
+- **Example**: Using Byte Pair Encoding (BPE) on "unhappiness" might result in 
+  ```
+  ["un", "happi", "ness"]
+  ```
+- **Use Case**: Useful in handling out-of-vocabulary words and languages with rich morphology.
+
+## 3. Character Tokenization
+- **Definition**: Splitting text into individual characters.
+- **Example**: 
+  ```
+  "NLP" 
+  → 
+  ["N", "L", "P"]
+  ```
+- **Use Case**: Common in tasks requiring fine-grained text analysis, like text generation and certain deep learning models.
+
+## 4. Sentence Tokenization
+- **Definition**: Splitting text into individual sentences.
+- **Example**: 
+  ```
+  "NLP is fascinating. It has many applications." 
+  → 
+  ["NLP is fascinating.", "It has many applications."]
+  ```
+- **Use Case**: Useful in tasks like summarization and document classification.
+
+## 5. Whitespace Tokenization
+- **Definition**: Splitting text based on whitespace.
+- **Example**: 
+  ```
+  "This is a simple example" 
+  → 
+  ["This", "is", "a", "simple", "example"]
+  ```
+- **Use Case**: Simplest form of tokenization, often used in preprocessing stages.
+
+## 6. Punctuation-Based Tokenization
+- **Definition**: Splitting text based on punctuation marks.
+- **Example**: 
+  ```
+  "Hello, world!" 
+  → 
+  ["Hello", ",", "world", "!"]
+  ```
+- **Use Case**: Important in certain applications like language modeling where punctuation can change the meaning of text.
+
+## 7. Regex Tokenization
+- **Definition**: Using regular expressions to define patterns for splitting text.
+- **Example**: Using the pattern `\W+` to split on non-word characters.
+- **Use Case**: Provides more control over the tokenization process, useful for complex text structures.
+
+Tokenization is a critical preprocessing step in NLP pipelines as it affects the performance and accuracy of subsequent tasks like parsing, machine translation, and named entity recognition.
+
+---
+
+This should be easily readable in any text editor.
