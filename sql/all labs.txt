@@ -1,0 +1,476 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| company            |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> use company
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++-------------------+
+| Tables_in_company |
++-------------------+
+| emp               |
++-------------------+
+1 row in set (0.00 sec)
+
+mysql> desc emp
+    -> ;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| name   | varchar(20) | NO   |     | NULL    |       |
+| no     | int         | NO   |     | NULL    |       |
+| city   | varchar(30) | NO   |     | NULL    |       |
+| salary | int         | NO   |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> alter table emp set no primary_key ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual thcorresponds to your MySQL server version for the right syntax to use near 'seo primary_key' at line 1
+mysql> ALTER TABLE emp
+    -> MODIFY no INT PRIMARY KEY;
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc emp;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| name   | varchar(20) | NO   |     | NULL    |       |
+| no     | int         | NO   | PRI | NULL    |       |
+| city   | varchar(30) | NO   |     | NULL    |       |
+| salary | int         | NO   |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql>
+mysql>
+mysql>
+mysql>
+mysql> desc emp;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| name   | varchar(20) | NO   |     | NULL    |       |
+| no     | int         | NO   | PRI | NULL    |       |
+| city   | varchar(30) | NO   |     | NULL    |       |
+| salary | int         | NO   |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> ALTER TABLE emp
+    -> MODIFY city VARCHAR(30) DEFAULT 'nsk';
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc emp ;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| name   | varchar(20) | NO   |     | NULL    |       |
+| no     | int         | NO   | PRI | NULL    |       |
+| city   | varchar(30) | YES  |     | nsk     |       |
+| salary | int         | NO   |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO emp(name,no,city,salary)VALUE("md",19,"thane",90000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO emp(name,no,city,salary)VALUE("ch",18,"pune",75000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO emp(name,no,city,salary)VALUE("pav",19,"hyd",70000);
+ERROR 1062 (23000): Duplicate entry '19' for key 'emp.PRIMARY'
+mysql> select * form emp ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'form emp' at line 1
+mysql> select * from emp;
++------+----+-------+--------+
+| name | no | city  | salary |
++------+----+-------+--------+
+| ch   | 18 | pune  |  75000 |
+| md   | 19 | thane |  90000 |
++------+----+-------+--------+
+2 rows in set (0.00 sec)
+
+mysql> INSERT INTO emp(name,no,city,salary)VALUE("pav",20,"hyd",70000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from emp;
++------+----+-------+--------+
+| name | no | city  | salary |
++------+----+-------+--------+
+| ch   | 18 | pune  |  75000 |
+| md   | 19 | thane |  90000 |
+| pav  | 20 | hyd   |  70000 |
++------+----+-------+--------+
+3 rows in set (0.00 sec)
+
+mysql> show create table emp;
++-------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table | Create Table                                                                                                                                                                                                                  |
++-------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| emp   | CREATE TABLE `emp` (
+  `name` varchar(20) NOT NULL,
+  `no` int NOT NULL,
+  `city` varchar(30) DEFAULT 'nsk',
+  `salary` int NOT NULL,
+  PRIMARY KEY (`no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++-------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> mysql> desc emp ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'mysql> desc emp' at line 1
+mysql> +--------+-------------+------+-----+---------+-------+
+    -> | Field  | Type        | Null | Key | Default | Extra |
+    -> +--------+-------------+------+-----+---------+-------+
+    -> | name   | varchar(20) | NO   |     | NULL    |       |
+    -> | no     | int         | NO   | PRI | NULL    |       |
+    -> | city   | varchar(30) | YES  |     | nsk     |       |
+    -> | salary | int         | NO   |     | NULL    |       |
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '+--------+-------------+------+-----+---------+-------+
+| Field  | Type        |' at line 1
+mysql>
+mysql>
+mysql>
+mysql>
+mysql> INSERT INTO emp(name,no,city,salary)VALUE("pav",null,"hyd",70000);
+ERROR 1048 (23000): Column 'no' cannot be null
+mysql>
+mysql>
+mysql> drop emp;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'emp' at line 1
+mysql> drop table emp
+    -> ;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE emp(
+    -> id NOT NULL  AUTO_INCREMENT
+    -> CREATE TABLE emp(;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NOT NULL  AUTO_INCREMENT
+CREATE TABLE emp(' at line 2
+mysql> CREATE TABLE emp(
+    -> id NOT NULL AUTO_INCREMENT,
+    -> firstname not null,
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NOT NULL AUTO_INCREMENT,
+firstname not null,' at line 2
+mysql> CREATE TABLE emp(
+    -> id NOT NULL AUTO_INCREMENT,
+    -> firstname no;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NOT NULL AUTO_INCREMENT,
+firstname no' at line 2
+mysql> CREATE TABLE emp(
+    -> id int NOT NULL AUTO_INCREMENT,
+    -> firstname varchar(20) not null,
+    -> middlename varchar(10),
+    -> lastname varchar(10) not null,
+    -> age int not null,
+    -> salary int not null,
+    -> city varchar(20) default 'nsk');
+ERROR 1075 (42000): Incorrect table definition; there can be only one auto column and it must be defined as a key
+mysql> CREATE TABLE emp(
+    -> id int AUTO_INCREMENT,
+    -> firstname varchar(20) not null,
+    -> middlename varchar(10),
+    -> lastname varchar(10) not null,
+    -> age int not null,
+    -> salary int not null,
+    -> city varchar(20) not null default 'nsk',
+    -> PRIMARY KEY(id));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc emp ;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| id         | int         | NO   | PRI | NULL    | auto_increment |
+| firstname  | varchar(20) | NO   |     | NULL    |                |
+| middlename | varchar(10) | YES  |     | NULL    |                |
+| lastname   | varchar(10) | NO   |     | NULL    |                |
+| age        | int         | NO   |     | NULL    |                |
+| salary     | int         | NO   |     | NULL    |                |
+| city       | varchar(20) | NO   |     | nsk     |                |
++------------+-------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+mysql> insert into emp(firstname,middlename,lastname,age,salary,city)value("pav","sandip","khairnar",29,70000,hyd);
+ERROR 1054 (42S22): Unknown column 'hyd' in 'field list'
+mysql> insert into emp(firstname,middlename,lastname,age,salary,city)value("pav","sandip","khairnar",29,70000,"hyd");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from emp ;
++----+-----------+------------+----------+-----+--------+------+
+| id | firstname | middlename | lastname | age | salary | city |
++----+-----------+------------+----------+-----+--------+------+
+|  1 | pav       | sandip     | khairnar |  29 |  70000 | hyd  |
++----+-----------+------------+----------+-----+--------+------+
+1 row in set (0.00 sec)
+
+mysql> insert into emp(firstname,middlename,lastname,age,salary)value("ch","sd","jd",29,76000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from emp ;
++----+-----------+------------+----------+-----+--------+------+
+| id | firstname | middlename | lastname | age | salary | city |
++----+-----------+------------+----------+-----+--------+------+
+|  1 | pav       | sandip     | khairnar |  29 |  70000 | hyd  |
+|  2 | ch        | sd         | jd       |  29 |  76000 | nsk  |
++----+-----------+------------+----------+-----+--------+------+
+2 rows in set (0.00 sec)
+
+mysql> create table demo(firstname varchar(20) not null,
+    -> lastname varchar(30) not null,
+    -> id int not null,
+    -> PRIMARY KEY (firstname,lastname));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc demo;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| firstname | varchar(20) | NO   | PRI | NULL    |       |
+| lastname  | varchar(30) | NO   | PRI | NULL    |       |
+| id        | int         | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into demo(firstname,lastname,id)("pav","khi",2)
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"pav","khi",2)' at line 1
+mysql> insert into demo(firstname,lastname,id)value("pav","khi",2)
+    -> ;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into demo(firstname,lastname,id)value("md","dh",4)
+    -> ;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into demo(firstname,lastname,id)value("pav","khi",5)
+    -> ;
+ERROR 1062 (23000): Duplicate entry 'pav-khi' for key 'demo.PRIMARY'
+mysql> drop demo;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'demo' at line 1
+mysql> drop table demo;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table demo(
+    -> id int ,
+    -> firstname varchar(20) not null,
+    -> lastname varchar(10) not null,
+    -> age int not null,
+    -> unique key(id)
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> desc demo;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| id        | int         | YES  | UNI | NULL    |       |
+| firstname | varchar(20) | NO   |     | NULL    |       |
+| lastname  | varchar(10) | NO   |     | NULL    |       |
+| age       | int         | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> insert into demo(id,firstname,lastname,age) value(1,"pav","khi",29);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into demo(id,firstname,lastname,age) value(null,"md","dho",29);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from demo;
++------+-----------+----------+-----+
+| id   | firstname | lastname | age |
++------+-----------+----------+-----+
+|    1 | pav       | khi      |  29 |
+| NULL | md        | dho      |  29 |
++------+-----------+----------+-----+
+2 rows in set (0.00 sec)
+
+mysql> insert into demo(id,firstname,lastname,age) value(null,"ch","jd",29); Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from demo;
++------+-----------+----------+-----+
+| id   | firstname | lastname | age |
++------+-----------+----------+-----+
+|    1 | pav       | khi      |  29 |
+| NULL | md        | dho      |  29 |
+| NULL | ch        | jd       |  29 |
++------+-----------+----------+-----+
+3 rows in set (0.00 sec)
+
+
+
+
+------------------------------------
+day2
+mysql> create database demo;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use demo
+Database changed
+mysql> create table emp(
+    -> id int not null,
+    -> firstname varchar(20) not null,
+    -> lastname varchar(20) not null,
+    -> age int not null,
+    -> salary int not null,
+    -> city varchar(20) not null default "nsk",
+    -> primary key(id),
+    -> unique key(firstname,lastname)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> desc emp;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| id        | int         | NO   | PRI | NULL    |       |
+| firstname | varchar(20) | NO   | MUL | NULL    |       |
+| lastname  | varchar(20) | NO   |     | NULL    |       |
+| age       | int         | NO   |     | NULL    |       |
+| salary    | int         | NO   |     | NULL    |       |
+| city      | varchar(20) | NO   |     | nsk     |       |
++-----------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> insert into emp(id, firstname,lastname,age,salary)value(1,"pav","khai",29,70000)
+    -> ;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into emp(id, firstname,lastname,age,salary,city)value(3,"md","dho",29,75000,"pune");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into emp(id, firstname,lastname,age,salary,city)value(8,"ch","jd",29,73000,"hyd");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from emp ;
++----+-----------+----------+-----+--------+------+
+| id | firstname | lastname | age | salary | city |
++----+-----------+----------+-----+--------+------+
+|  1 | pav       | khai     |  29 |  70000 | nsk  |
+|  3 | md        | dho      |  29 |  75000 | pune |
+|  8 | ch        | jd       |  29 |  73000 | hyd  |
++----+-----------+----------+-----+--------+------+
+3 rows in set (0.00 sec)
+
+mysql> select firstname from emp where salary > 71000;
++-----------+
+| firstname |
++-----------+
+| md        |
+| ch        |
++-----------+
+2 rows in set (0.00 sec)
+
+mysql> select firstname from emp where binary firstname = "Pav";
+Empty set, 1 warning (0.00 sec)
+
+mysql> select firstname from emp where binary firstname = "pav";
++-----------+
+| firstname |
++-----------+
+| pav       |
++-----------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> select firstname as name ,lastname as surname from emp where binary firstname = "pav";
++------+---------+
+| name | surname |
++------+---------+
+| pav  | khai    |
++------+---------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql>
+mysql>
+mysql>
+mysql> update emp set city = "hyd" where id = 1;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update emp set city = "pune" where id = 9;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> update emp set city = "mumbai" where id = 8;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * form emp;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'form emp' at line 1
+mysql> select * from emp;
++----+-----------+----------+-----+--------+--------+
+| id | firstname | lastname | age | salary | city   |
++----+-----------+----------+-----+--------+--------+
+|  1 | pav       | khai     |  29 |  70000 | hyd    |
+|  3 | md        | dho      |  29 |  75000 | pune   |
+|  8 | ch        | jd       |  29 |  73000 | mumbai |
++----+-----------+----------+-----+--------+--------+
+3 rows in set (0.00 sec)
+
+mysql> update emp set city = "pune" where id = 8;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update emp set city = "mumbai" where id = 3;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from emp;
++----+-----------+----------+-----+--------+--------+
+| id | firstname | lastname | age | salary | city   |
++----+-----------+----------+-----+--------+--------+
+|  1 | pav       | khai     |  29 |  70000 | hyd    |
+|  3 | md        | dho      |  29 |  75000 | mumbai |
+|  8 | ch        | jd       |  29 |  73000 | pune   |
++----+-----------+----------+-----+--------+--------+
+3 rows in set (0.00 sec)
+
+mysql> update emp set city = "nsk";
+Query OK, 3 rows affected (0.00 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
+mysql> select * from emp;
++----+-----------+----------+-----+--------+------+
+| id | firstname | lastname | age | salary | city |
++----+-----------+----------+-----+--------+------+
+|  1 | pav       | khai     |  29 |  70000 | nsk  |
+|  3 | md        | dho      |  29 |  75000 | nsk  |
+|  8 | ch        | jd       |  29 |  73000 | nsk  |
++----+-----------+----------+-----+--------+------+
+3 rows in set (0.00 sec)
+
+mysql> delete form emp where id = 1;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'emp where id = 1' at line 1
+mysql> delete form emp where id = 1;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'emp where id = 1' at line 1
+mysql> delete form emp where id=1;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'emp where id=1' at line 1
+mysql> delete from emp where id=1;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from emp;
++----+-----------+----------+-----+--------+------+
+| id | firstname | lastname | age | salary | city |
++----+-----------+----------+-----+--------+------+
+|  3 | md        | dho      |  29 |  75000 | nsk  |
+|  8 | ch        | jd       |  29 |  73000 | nsk  |
++----+-----------+----------+-----+--------+------+
+2 rows in set (0.00 sec)
+--------------------------------------------------------------
+

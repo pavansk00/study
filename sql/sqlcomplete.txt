@@ -1,0 +1,222 @@
+1.create table--
+
+show create table;
+--+
+| emp   | CREATE TABLE `emp` (
+  `name` varchar(20) NOT NULL,
+  `no` int NOT NULL,
+  `city` varchar(30) DEFAULT 'nsk',
+  `salary` int NOT NULL,
+  PRIMARY KEY (`no`)
+
+mysql> CREATE TABLE emp(
+    -> id int AUTO_INCREMENT,
+    -> firstname varchar(20) not null,
+    -> middlename varchar(10),
+    -> lastname varchar(10) not null,
+    -> age int not null,
+    -> salary int not null,
+    -> city varchar(20) not null default 'nsk',
+    -> PRIMARY KEY(id));
+Query OK, 0 rows affected (0.03 sec)
+
+
+
+
+2.alter statement
+mysql> ALTER TABLE emp
+    -> MODIFY city VARCHAR(30) DEFAULT 'nsk';
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql> desc emp ;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| id         | int         | NO   | PRI | NULL    | auto_increment |
+| firstname  | varchar(20) | NO   |     | NULL    |                |
+| middlename | varchar(10) | YES  |     | NULL    |                |
+| lastname   | varchar(10) | NO   |     | NULL    |                |
+| age        | int         | NO   |     | NULL    |                |
+| salary     | int         | NO   |     | NULL    |                |
+| city       | varchar(20) | NO   |     | nsk     |                |
++------------+-------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+
+3. insert statement;
+mysql> INSERT INTO emp(name,no,city,salary)VALUE("pav",20,"hyd",70000);
+Query OK, 1 row affected (0.00 sec)
+
+--------------------
+primary key:
+.not null always
+.
+
+
+
+--------------------
+unique key;
+.unique key only 1 null value take
+.we can have multiple unique key in table but only one primary key
+
+mysql> create table demo(
+    -> id int ,
+    -> firstname varchar(20) not null,
+    -> lastname varchar(10) not null,
+    -> age int not null,
+    -> unique key(id)
+    -> );
+
+mysql> select * from demo;
++------+-----------+----------+-----+
+| id   | firstname | lastname | age |
++------+-----------+----------+-----+
+|    1 | pav       | khi      |  29 |
+| NULL | md        | dho      |  29 |
+| NULL | ch        | jd       |  29 |
++------+-----------+----------+-----+
+3 rows in set (0.00 sec)
+
+.see here multiple null value can pass in unique key
+
+-----------------------------------------------------------------
+CRUD operation 
+create read update delete
+
+
+-------------create:
+mysql> use demo
+Database changed
+mysql> create table emp(
+    -> id int not null,
+    -> firstname varchar(20) not null,
+    -> lastname varchar(20) not null,
+    -> age int not null,
+    -> salary int not null,
+    -> city varchar(20) not null default "nsk",
+    -> primary key(id),
+    -> unique key(firstname,lastname)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> desc emp;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| id        | int         | NO   | PRI | NULL    |       |
+| firstname | varchar(20) | NO   | MUL | NULL    |       |
+| lastname  | varchar(20) | NO   |     | NULL    |       |
+| age       | int         | NO   |     | NULL    |       |
+| salary    | int         | NO   |     | NULL    |       |
+| city      | varchar(20) | NO   |     | nsk     |       |
++-----------+-------------+------+-----+---------+-------+
+6 rows in set
+
+mysql> insert into emp(id, firstname,lastname,age,salary)value(1,"pav","khai",29,70000)
+    -> ;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into emp(id, firstname,lastname,age,salary,city)value(3,"md","dho",29,75000,"pune");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into emp(id, firstname,lastname,age,salary,city)value(8,"ch","jd",29,73000,"hyd");
+
+
+
+-----------------------------------
+read:
+
+mysql> select * from emp ;
++----+-----------+----------+-----+--------+------+
+| id | firstname | lastname | age | salary | city |
++----+-----------+----------+-----+--------+------+
+|  1 | pav       | khai     |  29 |  70000 | nsk  |
+|  3 | md        | dho      |  29 |  75000 | pune |
+|  8 | ch        | jd       |  29 |  73000 | hyd  |
++----+-----------+----------+-----+--------+------+
+3 rows in set (0.00 sec)
+
+mysql> select firstname from emp where salary > 71000;
++-----------+
+| firstname |
++-----------+
+| md        |
+| ch        |
++-----------+
+2 rows in set (0.00 sec)
+
+
+
+---------------binary:
+
+mysql> select firstname from emp where binary firstname = "Pav";
+Empty set, 1 warning (0.00 sec)
+
+mysql> select firstname from emp where binary firstname = "pav";
++-----------+
+| firstname |
++-----------+
+| pav       |
++-----------+
+1 row in set, 1 warning (0.00 sec)
+
+
+here binary is use for case sensitive read
+
+--------------alias
+mysql> select firstname as name ,lastname as surname from emp where binary firstname = "pav";
++------+---------+
+| name | surname |
++------+---------+
+| pav  | khai    |
++------+---------+
+1 row in set, 1 warning (0.00 sec)
+
+------------------------------------------------------------------
+UPDATE
+
+mysql> update emp set city = "pune" where id = 8;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update emp set city = "mumbai" where id = 3;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from emp;
++----+-----------+----------+-----+--------+--------+
+| id | firstname | lastname | age | salary | city   |
++----+-----------+----------+-----+--------+--------+
+|  1 | pav       | khai     |  29 |  70000 | hyd    |
+|  3 | md        | dho      |  29 |  75000 | mumbai |
+|  8 | ch        | jd       |  29 |  73000 | pune   |
++----+-----------+----------+-----+--------+--------+
+3 rows in set (0.00 sec)
+
+
+
+if we update without where cause then it will update for all table
+
+mysql> update emp set city = "nsk";
+Query OK, 3 rows affected (0.00 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
+mysql> select * from emp;
++----+-----------+----------+-----+--------+------+
+| id | firstname | lastname | age | salary | city |
++----+-----------+----------+-----+--------+------+
+|  1 | pav       | khai     |  29 |  70000 | nsk  |
+|  3 | md        | dho      |  29 |  75000 | nsk  |
+|  8 | ch        | jd       |  29 |  73000 | nsk  |
++----+-----------+----------+-----+--------+------+
+3 rows in set (0.00 sec)
+
+-----------------------------------------------------------------
+DELETE
+
+
+mysql> delete from emp where id=1;
+Query OK, 1 row affected (0.01 sec)
+
+	
+
