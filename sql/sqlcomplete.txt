@@ -218,5 +218,364 @@ DELETE
 mysql> delete from emp where id=1;
 Query OK, 1 row affected (0.01 sec)
 
-	
+mysql> select * from demo;
++------+-----------+----------+-----+
+| id   | firstname | lastname | age |
++------+-----------+----------+-----+
+|    1 | pav       | khi      |  29 |
+| NULL | md        | dho      |  29 |
+| NULL | ch        | jd       |  29 |
++------+-----------+----------+-----+
+3 rows in set (0.00 sec)
+
+mysql> delete from demo where id = 1;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from demo;
++------+-----------+----------+-----+
+| id   | firstname | lastname | age |
++------+-----------+----------+-----+
+| NULL | md        | dho      |  29 |
+| NULL | ch        | jd       |  29 |
++------+-----------+----------+-----+
+2 rows in set (0.00 sec)
+
+
+if we not mentaion any in where cause all Records will delete
+
+mysql> delete from demo;
+Query OK, 2 rows affected (0.02 sec)
+
+mysql> select * from demo;
+Empty set (0.00 sec)
+
+------------------------------------------------------------------
+
+Alter command
+....alter will do structure modification
+
+mysql> desc demo;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| id        | int         | YES  | UNI | NULL    |       |
+| firstname | varchar(20) | NO   |     | NULL    |       |
+| lastname  | varchar(10) | NO   |     | NULL    |       |
+| age       | int         | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> alter table demo modify cloumn firstname varchar(50);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'firstname varchar(50)' at line 1
+mysql>
+mysql> alter table demo modify column firstname varchar(50);
+Query OK, 0 rows affected (0.09 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table demo add column city varchar(20) not null;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table demo drop column age ;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc demo;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| id        | int         | YES  | UNI | NULL    |       |
+| firstname | varchar(50) | YES  |     | NULL    |       |
+| lastname  | varchar(10) | NO   |     | NULL    |       |
+| city      | varchar(20) | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+-------------------------------------------------
+
+DDL VS DML
+
+data defination lang(DDL) ---it will change structure
+                        create alter drop
+                        Truncate will remove all Records  
+                        truncate drop table and recreate table it is fast
+
+data manipulation lang(DML) ---- deal with data
+                      insert update delete
+                      delete will delete all table it will take time
+
+-----------------------------------------------------------------------
+
+mysql> create table student( id int AUTO_INCREMENT, fname varchar(30) not null, mname varchar(20), lname varchar(20) not null, email varchar(30) not null, ph_no varchar(15) not null, alternative_ph_no varchar(15), enrollment_date timestamp not null, years_of_exp int not null, company_name varchar(40), batch_data varchar(20) not null, source_of_joining varchar(20) not null, location
+varchar(30) not null, primary key(id), unique key(email));
+Query OK, 0 rows affected (0.05 sec)
+
+
+mysql> desc student;
++-------------------+-------------+------+-----+---------+----------------+
+| Field             | Type        | Null | Key | Default | Extra          |
++-------------------+-------------+------+-----+---------+----------------+
+| id                | int         | NO   | PRI | NULL    | auto_increment |
+| fname             | varchar(30) | NO   |     | NULL    |                |
+| mname             | varchar(20) | YES  |     | NULL    |                |
+| lname             | varchar(20) | NO   |     | NULL    |                |
+| email             | varchar(30) | NO   | UNI | NULL    |                |
+| ph_no             | varchar(15) | NO   |     | NULL    |                |
+| alternative_ph_no | varchar(15) | YES  |     | NULL    |                |
+| enrollment_date   | timestamp   | NO   |     | NULL    |                |
+| years_of_exp      | int         | NO   |     | NULL    |                |
+| company_name      | varchar(40) | YES  |     | NULL    |                |
+| batch_data        | varchar(20) | NO   |     | NULL    |                |
+| source_of_joining | varchar(20) | NO   |     | NULL    |                |
+| location          | varchar(30) | NO   |     | NULL    |                |
++-------------------+-------------+------+-----+---------+----------------+
+13 rows in set (0.00 sec)
+
+mysql> insert into student(fname,lname,email,ph_no,years_of_exp,company_name,batch_data,source_of_joining,location)value('pav','khai','pavansk00@gmail.com',8055719031,5,'ivy','20-09-2024','youtube','nsk');
+ERROR 1364 (HY000): Field 'enrollment_date' doesn't have a default value
+mysql> alter table student modify enrollment_date varchar(30);
+Query OK, 0 rows affected (0.09 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> insert into student(fname,lname,email,ph_no,years_of_exp,company_name,batch_data,source_of_joining,location)value('pav','khai','pavansk00@gmail.com',8055719031,5,'ivy','20-09-2024','youtube','nsk');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into student(fname,lname,email,ph_no,years_of_exp,company_name,batch_data,source_of_joining,location)value('md','dh','dmadhuri@gmail.com',88069
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into student(fname,lname,email,ph_no,years_of_exp,company_name,batch_data,source_of_joining,location)value('ch','jd','chetanj@gmail.com',940002
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into student(fname,lname,email,ph_no,years_of_exp,company_name,batch_data,source_of_joining,location)value('vb','gw','vaibhav@gmail.com',84232343243,5,'ac','20-01-2024','whatsapp','mum');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> create table courses(
+    -> id int not null,
+    -> cname varchar(30) not null,
+    -> cduration int not null,
+    -> fee int not null,
+    -> primary key(id)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+
+------------------multi insertion-----------------
+mysql> insert into courses(id, cname, cduration,fee)value
+    -> (1,'big_data',3,50000),
+    -> (2,'web_development', 3,30000),
+    -> (3,'data_science', 4 ,40000),
+    -> (4,'devops',4,10000);
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+=========================================================
+CONSTRAINT-------------used to limit the type of data can go into a table
+                       if there any voilation data will not insert.
+ create TABLE
+  student | CREATE TABLE `student` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `fname` varchar(30) NOT NULL,
+  `mname` varchar(20) DEFAULT NULL,
+  `lname` varchar(20) NOT NULL,
+  `email` varchar(30) NOT NULL,
+  `ph_no` varchar(15) NOT NULL,
+  `alternative_ph_no` varchar(15) DEFAULT NULL,
+  `enrollment_date` varchar(30) DEFAULT NULL,
+  `years_of_exp` int NOT NULL,
+  `company_name` varchar(40) DEFAULT NULL,
+  `batch_data` varchar(20) NOT NULL,
+  `source_of_joining` varchar(20) NOT NULL,
+  `location` varchar(30) NOT NULL,
+  `selected_course` int NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  KEY `selected_course` (`selected_course`),
+  CONSTRAINT `student_ibfk_1` FOREIGN KEY (`selected_course`) REFERENCES `courses` (`id`)
+)
+
+----------here if we add CONSTRAINT foreign key if in couese table we have some course id and those
+          course id we added in selected_course in student table 
+          .if we add diff id than course id it will through error
+          .if we added course id in student table which present in course table if we try to delete that courses id it will give error 
+          these tow error are foreign key error.
+          prevent action that would destroy link betw two TABLE
+-----------the table with foreign key call child table and table with primary key call parent or ref table.
+
+mysql> desc student
+    -> ;
++-------------------+-------------+------+-----+---------+----------------+
+| Field             | Type        | Null | Key | Default | Extra          |
++-------------------+-------------+------+-----+---------+----------------+
+| id                | int         | NO   | PRI | NULL    | auto_increment |
+| fname             | varchar(30) | NO   |     | NULL    |                |
+| mname             | varchar(20) | YES  |     | NULL    |                |
+| lname             | varchar(20) | NO   |     | NULL    |                |
+| email             | varchar(30) | NO   | UNI | NULL    |                |
+| ph_no             | varchar(15) | NO   |     | NULL    |                |
+| alternative_ph_no | varchar(15) | YES  |     | NULL    |                |
+| enrollment_date   | varchar(30) | YES  |     | NULL    |                |
+| years_of_exp      | int         | NO   |     | NULL    |                |
+| company_name      | varchar(40) | YES  |     | NULL    |                |
+| batch_data        | varchar(20) | NO   |     | NULL    |                |
+| source_of_joining | varchar(20) | NO   |     | NULL    |                |
+| location          | varchar(30) | NO   |     | NULL    |                |
+| selected_course   | int         | NO   | MUL | 1       |                |
++-------------------+-------------+------+-----+---------+----------------+
+14 rows in set (0.00 sec)
+==============================================================================================
+
+
+1.Distinct-----------------
+
+
+
+mysql> select location from student ;
++----------+
+| location |
++----------+
+| nsk      |
+| thane    |
+| pune     |
+| mum      |
+| pune     |
++----------+
+5 rows in set (0.00 sec)
+
+mysql> select distinct location from student ;
++----------+
+| location |
++----------+
+| nsk      |
+| thane    |
+| pune     |
+| mum      |
++----------+
+4 rows in set (0.00 sec)
+-----------------------------------------------------------------
+2.Order
+ordering to data
+
+mysql> select fname, years_of_exp from student order by years_of_exp ;
++-------+--------------+
+| fname | years_of_exp |
++-------+--------------+
+| pav   |            5 |
+| md    |            5 |
+| ch    |            5 |
+| vb    |            5 |
+| 43dg  |           23 |
++-------+--------------+
+5 rows in set (0.00 sec)
+
+mysql> select fname, years_of_exp from student order by years_of_exp desc;
++-------+--------------+
+| fname | years_of_exp |
++-------+--------------+
+| 43dg  |           23 |
+| pav   |            5 |
+| md    |            5 |
+| ch    |            5 |
+| vb    |            5 |
++-------+--------------+
+5 rows in set (0.00 sec)
+
+
+--------here we can pass order by 1 means order on 1st column
+mysql> select fname, years_of_exp from student order by 1 desc;
++-------+--------------+
+| fname | years_of_exp |
++-------+--------------+
+| vb    |            5 |
+| pav   |            5 |
+| md    |            5 |
+| ch    |            5 |
+| 43dg  |           23 |
++-------+--------------+
+5 rows in set (0.00 sec)
+
+
+---------order by 2 means oder on 2nd column
+mysql> select fname, years_of_exp from student order by 2 desc;
++-------+--------------+
+| fname | years_of_exp |
++-------+--------------+
+| 43dg  |           23 |
+| pav   |            5 |
+| md    |            5 |
+| ch    |            5 |
+| vb    |            5 |
++-------+--------------+
+5 rows in set (0.00 sec)
+
+------------here we can order the data 1st on fname and next order will be years of exp
+mysql> select fname, years_of_exp from student order by fname, years_of_exp desc;
++-------+--------------+
+| fname | years_of_exp |
++-------+--------------+
+| 43dg  |           23 |
+| ch    |            5 |
+| md    |            5 |
+| pav   |            5 |
+| vb    |            5 |
++-------+--------------+
+5 rows in set (0.00 sec)
+
+
+mysql> select fname , years_of_exp, source_of_joining from student order by 2 desc limit 3;
++-------+--------------+-------------------+
+| fname | years_of_exp | source_of_joining |
++-------+--------------+-------------------+
+| vb    |            4 | whatsapp          |
+| md    |            3 | facebook          |
+| ch    |            2 | intsa             |
++-------+--------------+-------------------+
+3 rows in set (0.00 sec)
+-----------------------------------------------------------------------------
+3.LIKE
+
+
+% is wild card char.
+
+mysql> select fname , years_of_exp, source_of_joining from student where fname LIKE '%v%';
++-------+--------------+-------------------+
+| fname | years_of_exp | source_of_joining |
++-------+--------------+-------------------+
+| pav   |            1 | youtube           |
+| vb    |            4 | whatsapp          |
++-------+--------------+-------------------+
+2 rows in set (0.00 sec)
+
+select all Records start with p ch
+
+
+mysql> select fname , years_of_exp, source_of_joining from student where fname LIKE 'p%';
++-------+--------------+-------------------+
+| fname | years_of_exp | source_of_joining |
++-------+--------------+-------------------+
+| pav   |            1 | youtube           |
++-------+--------------+-------------------+
+1 row in set (0.00 sec)
+
+record end with name b char
+mysql> select fname , years_of_exp, source_of_joining from student where fname LIKE '%b';
++-------+--------------+-------------------+
+| fname | years_of_exp | source_of_joining |
++-------+--------------+-------------------+
+| vb    |            4 | whatsapp          |
++-------+--------------+-------------------+
+1 row in set (0.00 sec)
+
+if i want 2 char name in Records
+here _ means one char
+mysql> select fname , years_of_exp, source_of_joining from student where fname LIKE '__';
++-------+--------------+-------------------+
+| fname | years_of_exp | source_of_joining |
++-------+--------------+-------------------+
+| md    |            3 | facebook          |
+| ch    |            2 | intsa             |
+| vb    |            4 | whatsapp          |
++-------+--------------+-------------------+
+3 rows in set (0.01 sec)
+
+
 
