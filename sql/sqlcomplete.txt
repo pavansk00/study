@@ -545,8 +545,8 @@ mysql> select fname , years_of_exp, source_of_joining from student where fname L
 +-------+--------------+-------------------+
 2 rows in set (0.00 sec)
 
-select all Records start with p ch
 
+select all Records start with p ch
 
 mysql> select fname , years_of_exp, source_of_joining from student where fname LIKE 'p%';
 +-------+--------------+-------------------+
@@ -578,4 +578,729 @@ mysql> select fname , years_of_exp, source_of_joining from student where fname L
 3 rows in set (0.01 sec)
 
 
+===========================================================================
+order by and distinct
 
+-order by with distinct not work 
+-because if we use distinct  combination on fname and order by years_of_exp then internally
+-it will select distinct add on both fame and years_of_exp and perform order by on years_of_exp so output will change
+==================================================================================
+
+Aggregate function
+
+1.count
+
+number of Recordss
+mysql> select count(*) from student;
++----------+
+| count(*) |
++----------+
+|        4 |
++----------+
+
+with distinct Records
+mysql> select count(distinct fname) from student;
++-----------------------+
+| count(distinct fname) |
++-----------------------+
+|                     4 |
++-----------------------+
+1 row in set (0.01 sec)
+
+mysql> select count(*) from student where batch_data like '%07%';
++----------+
+| count(*) |
++----------+
+|        1 |
++----------+
+1 row in set (0.01 sec)
+
+Group by:
+
+1.Group by statement here if we group by on location then 1st we need to select location and then we can use 
+group by statement. for group by we need to add in select
+
+
+eg.
+mysql> select source_of_joining ,count(*) from student group by source_of_joining;
++-------------------+----------+
+| source_of_joining | count(*) |
++-------------------+----------+
+| youtube           |        1 |
+| facebook          |        1 |
+| intsa             |        1 |
+| whatsapp          |        1 |
++-------------------+----------+
+4 rows in set (0.01 sec)
+
+
+
+mysql> select location ,count(*) from student group by location;
++----------+----------+
+| location | count(*) |
++----------+----------+
+| nsk      |        1 |
+| thane    |        1 |
+| pune     |        1 |
+| mum      |        1 |
++----------+----------+
+4 rows in set (0.00 sec)
+
+here we selected diff field and group by on diff field getting error
+mysql> select source_of_joining ,count(*) from student group by location;
+ERROR 1055 (42000): Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'company.student.source_of_joining' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+
+
+here we can use combination of both field
+mysql> select location , source_of_joining, count(*) from student group by lo
+cation, source_of_joining ;
++----------+-------------------+----------+
+| location | source_of_joining | count(*) |
++----------+-------------------+----------+
+| nsk      | youtube           |        1 |
+| thane    | facebook          |        1 |
+| pune     | intsa             |        1 |
+| mum      | whatsapp          |        1 |
++----------+-------------------+----------+
+4 rows in set (0.01 sec)
+
+
+mysql> select selected_course ,batch_data,count(*) from student group by selected_course, batch_data;
++-----------------+------------+----------+
+| selected_course | batch_data | count(*) |
++-----------------+------------+----------+
+|               1 | 20-09-2024 |        1 |
+|               1 | 20-08-2024 |        1 |
+|               1 | 20-07-2024 |        1 |
+|               1 | 20-01-2024 |        1 |
++-----------------+------------+----------+
+4 rows in set (0.00 sec)
+
+
+------------------------------------------------------
+MIN,MAX
+1.select min(years_of_exp), fname from student;
+this is wrong 
+
+
+
+
+mysql> select min(years_of_exp) from student;
++-------------------+
+| min(years_of_exp) |
++-------------------+
+|                 1 |
++-------------------+
+1 row in set (0.00 sec)
+
+mysql> select max(years_of_exp) from student;
++-------------------+
+| max(years_of_exp) |
++-------------------+
+|                 4 |
++-------------------+
+1 row in set (0.00 sec)
+
+we need Records maximum years_of_exp from source_of_joining
+
+mysql> select source_of_joining,max(years_of_exp) from student group by source_of_joining;
++-------------------+-------------------+
+| source_of_joining | max(years_of_exp) |
++-------------------+-------------------+
+| youtube           |                 1 |
+| facebook          |                 3 |
+| intsa             |                 2 |
+| whatsapp          |                 4 |
++-------------------+-------------------+
+4 rows in set (0.00 sec)
+
+-------------------------------
+sum:
+
+mysql> select selected_course, sum(years_of_exp) from student group by selected_course;
++-----------------+-------------------+
+| selected_course | sum(years_of_exp) |
++-----------------+-------------------+
+|               1 |                10 |
++-----------------+-------------------+
+1 row in set (0.00 sec)
+
+---------------------------------------------------
+avg:
+
+
+mysql> select selected_course, avg(years_of_exp) from student group by selected_course;
++-----------------+-------------------+
+| selected_course | avg(years_of_exp) |
++-----------------+-------------------+
+|               1 |            2.5000 |
++-----------------+-------------------+
+1 row in set (0.00 sec)
+
+
+==============================================================================================
+Decimal data type 
+
+mysql> create table courses_new(
+    -> id int not null,
+    -> cname varchar(30) not null,
+    -> cduration decimal(3.2) not null,   #here 3.2 means 3 digits and 2 means after decimal point how many digit you want
+    -> cfees int not null,
+    -> change_at TIMESTAMP DEFAULT NOW(),
+    -> primary key(id));
+
+
+mysql> insert into courses_new (id,cname,cduration,cfees)values
+    -> (1,'big_data', 5.5,60000),
+    -> (2,'cloud', 3.5,40000),
+    -> (3,'web_dev',2.5,25000),
+    -> (4,'devops',2,20000);
+Query OK, 4 rows affected, 3 warnings (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 3
+
+this will give update time when we add or modify any record
+mysql> ALTER TABLE courses_new MODIFY change_at TIMESTAMP DEFAULT NOW() ON UPDATE NOW();
+    Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+=============================================================================
+logical operator
+
+select * from student where years_of_exp not  between 3 and 4;\
+
+
+mysql> select * from student where years_of_exp   between 3 and 4;
+
+
+mysql> select * from student where years_of_exp >3  and location = 'mum'
+
+
+
+mysql> select * from student where location in('thane','pune','mum');
++----+-------+-------+-------+--------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email              | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+--------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com  | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com  | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+--------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from student where location not in('thane','pune','mum');
++----+-------+-------+-------+---------------------+------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email               | ph_no      | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+---------------------+------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031 | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |
++----+-------+-------+-------+---------------------+------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+1 row in set (0.00 sec)
+
+
+-----------------------------------
+case statement 
+
+1.if cduration is greater than 4 months then wecall as masters eles diploma
+mysql> select cname ,cfees, cduration, case when cduration >4 then 'masters'
+else 'diploma' end as ctype from courses_new;
++--------------+-------+-----------+---------+
+| cname        | cfees | cduration | ctype   |
++--------------+-------+-----------+---------+
+| big_data     | 60000 |         6 | masters |
+| cloud        | 40000 |         4 | diploma |
+| web_dev      | 25000 |         3 | diploma |
+| devops       | 20000 |         2 | diploma |
+| data_science | 24000 |         2 | diploma |
++--------------+-------+-----------+---------+
+5 rows in set (0.00 sec)
+
+2.product based and service based company
+
+
+mysql> select fname, company_name ,
+    -> case
+    -> when company_name in ('ivy','bf') then 'product_base'
+    -> else 'service_base'
+    -> end as company_type
+    -> from student;
++-------+--------------+--------------+
+| fname | company_name | company_type |
++-------+--------------+--------------+
+| pav   | ivy          | product_base |
+| md    | boa          | service_base |
+| ch    | bf           | product_base |
+| vb    | ac           | service_base |
++-------+--------------+--------------+
+4 rows in set (0.00 sec)
+
+
+================================================================================
+join
+
+
+1.sub query:
+
+mysql> select cname from courses where id = (select selected_course from student where fname = 'md');
++----------+
+| cname    |
++----------+
+| big_data |
++----------+
+1 row in set (0.01 sec)
+
+------------------------
+join
+
+mysql> select s.fname, c.cname from student as s join courses_new as c on s.selected_course = c.id;
++-------+----------+
+| fname | cname    |
++-------+----------+
+| pav   | big_data |
+| md    | big_data |
+| ch    | big_data |
+| vb    | big_data |
++-------+----------+
+4 rows in set (0.00 sec)
+----------by default it is inner join
+
+-----------------------create new table like existing table only contains are not available
+                        it will add all data also same as old table
+
+mysql> create table student_new as select * from student;
+Query OK, 4 rows affected (0.05 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> desc student_new
+    -> ;
++-------------------+-------------+------+-----+---------+-------+
+| Field             | Type        | Null | Key | Default | Extra |
++-------------------+-------------+------+-----+---------+-------+
+| id                | int         | NO   |     | 0       |       |
+| fname             | varchar(30) | NO   |     | NULL    |       |
+| mname             | varchar(20) | YES  |     | NULL    |       |
+| lname             | varchar(20) | NO   |     | NULL    |       |
+| email             | varchar(30) | NO   |     | NULL    |       |
+| ph_no             | varchar(15) | NO   |     | NULL    |       |
+| alternative_ph_no | varchar(15) | YES  |     | NULL    |       |
+| enrollment_date   | varchar(30) | YES  |     | NULL    |       |
+| years_of_exp      | int         | NO   |     | NULL    |       |
+| company_name      | varchar(40) | YES  |     | NULL    |       |
+| batch_data        | varchar(20) | NO   |     | NULL    |       |
+| source_of_joining | varchar(20) | NO   |     | NULL    |       |
+| location          | varchar(30) | NO   |     | NULL    |       |
+| selected_course   | int         | NO   |     | 1       |       |
++-------------------+-------------+------+-----+---------+-------+
+14 rows in set (0.00 sec)
+
+mysql>
+
+
+left and right join
+
+mysql> select * from courses_new;
++----+--------------+-----------+-------+---------------------+
+| id | cname        | cduration | cfees | change_at           |
++----+--------------+-----------+-------+---------------------+
+|  1 | big_data     |         6 | 60000 | 2024-09-23 08:54:59 |
+|  2 | cloud        |         4 | 40000 | 2024-09-23 08:54:59 |
+|  3 | web_dev      |         3 | 25000 | 2024-09-23 08:54:59 |
+|  4 | devops       |         2 | 20000 | 2024-09-23 08:54:59 |
+|  5 | data_science |         2 | 24000 | 2024-09-23 09:06:26 |
++----+--------------+-----------+-------+---------------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from  student_new ;
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email               | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+4 rows in set (0.00 sec)
+
+see diff with left and right join
+
+mysql> select s.fname, c.cname from student as s right join courses_new as c
+on s.selected_course = c.id;
++-------+--------------+
+| fname | cname        |
++-------+--------------+
+| vb    | big_data     |
+| ch    | big_data     |
+| md    | big_data     |
+| pav   | big_data     |
+| NULL  | cloud        |
+| NULL  | web_dev      |
+| NULL  | devops       |
+| NULL  | data_science |
++-------+--------------+
+8 rows in set (0.01 sec)
+
+mysql> select s.fname, c.cname from student as s left join courses_new as c o
+n s.selected_course = c.id;
++-------+----------+
+| fname | cname    |
++-------+----------+
+| pav   | big_data |
+| md    | big_data |
+| ch    | big_data |
+| vb    | big_data |
++-------+----------+
+4 rows in set (0.00 sec)
+
+
+full outer join 
+not possible in mysql so union we can use 
+
+mysql> select s.fname, c.cname from student as s left join courses_new as c on s.selected_course = c.id
+    -> union
+    -> select s.fname, c.cname from student as s right join courses_new as c on s.selected_course = c.id;
++-------+--------------+
+| fname | cname        |
++-------+--------------+
+| pav   | big_data     |
+| md    | big_data     |
+| ch    | big_data     |
+| vb    | big_data     |
+| NULL  | cloud        |
+| NULL  | web_dev      |
+| NULL  | devops       |
+| NULL  | data_science |
++-------+--------------+
+
+cross join 
+
+every record join with other record
+mysql> select count(*) from student;
++----------+
+| count(*) |
++----------+
+|        4 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select count(*) from courses_new
+    -> ;
++----------+
+| count(*) |
++----------+
+|        5 |
++----------+
+1 row in set (0.00 sec)
+so 4*5 20 records
+
+select * from student, courses_new\G
+
+ select * from student join 
+ 
+
+ ==================================================================
+
+ where and having clause
+
+ where clause to filter out individual records brfore aggregation
+ having use after group by do filtering Aggregated records
+
+ mysql> select location ,count(*) as total from student_new group by location
+having total >1;
++----------+-------+
+| location | total |
++----------+-------+
+| mum      |     2 |
++----------+-------+
+1 row in set (0.00 sec)
+
+mysql> select location ,count(*) as total from student_new group by location
+having location = 'mum';
++----------+-------+
+| location | total |
++----------+-------+
+| mum      |     2 |
++----------+-------+
+1 row in set (0.00 sec)
+
+mysql> select location ,count(*) as total from student_new group by location
+having location = 'nsk';
++----------+-------+
+| location | total |
++----------+-------+
+| nsk      |     1 |
++----------+-------+
+1 row in set (0.00 sec)
+
+
+---------but possible add where clause because it will help to fast it will match and then group
+         but if you didnt added where and adding having like above it will group first and then check location so it may take time
+         we can use where and having query also 
+
+mysql> select location ,count(*) as total from student_new  where location= 'nsk' group by location;
++----------+-------+
+| location | total |
++----------+-------+
+| nsk      |     1 |
++----------+-------+
+1 row in set (0.00 sec)
+
+having with where 
+i need all student record where years_of_exp greater than 1 and group by there location and same city more than 2 records
+
+mysql> select location as total from student_new  where years_of_exp >1;
++-------+
+| total |
++-------+
+| mum   |
+| pune  |
+| mum   |
++-------+
+3 rows in set (0.00 sec)
+
+mysql> select location , count(*) as total from student_new  where years_of_exp >1 group by location;
++----------+-------+
+| location | total |
++----------+-------+
+| mum      |     2 |
+| pune     |     1 |
++----------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select location , count(*) as total from student_new  where years_of_exp >1 group by location having total>1;
++----------+-------+
+| location | total |
++----------+-------+
+| mum      |     2 |
++----------+-------+
+1 row in set (0.00 sec)
+
+
+==============================================================================
+
+
+mysql> desc emp ;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| id         | int         | NO   | PRI | NULL    | auto_increment |
+| firstname  | varchar(20) | NO   |     | NULL    |                |
+| middlename | varchar(10) | YES  |     | NULL    |                |
+| lastname   | varchar(10) | NO   |     | NULL    |                |
+| age        | int         | NO   |     | NULL    |                |
+| salary     | int         | NO   |     | NULL    |                |
+| city       | varchar(20) | NO   |     | nsk     |                |
++------------+-------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+
+need data for how many emp from which city and there avg salary
+mysql> select city ,count(*) as total , avg(salary) from emp group by city;
++------+-------+-------------+
+| city | total | avg(salary) |
++------+-------+-------------+
+| nsk  |     1 |  70000.0000 |
+| mum  |     3 |  80000.0000 |
+| pune |     1 |  73000.0000 |
+| nw   |     1 |  40000.0000 |
++------+-------+-------------+
+4 rows in set (0.00 sec)
+
+--------------if what we want Aggregated and nonaggregated field together
+need data for how many emp from which city and there avg salary
+with this need firstname and lastname also
+
+mysql> SELECT firstname, lastname, g.city, total_count, avg_salary
+    -> FROM emp
+    -> JOIN (
+    ->     SELECT city, COUNT(city) AS total_count, AVG(salary) AS avg_salary
+    ->     FROM emp
+    ->     GROUP BY city
+    -> ) g ON emp.city = g.city;
++-----------+----------+------+-------------+------------+
+| firstname | lastname | city | total_count | avg_salary |
++-----------+----------+------+-------------+------------+
+| pav       | khi      | nsk  |           1 | 70000.0000 |
+| md        | dh       | mum  |           3 | 80000.0000 |
+| vb        | gw       | mum  |           3 | 80000.0000 |
+| ch        | jd       | pune |           1 | 73000.0000 |
+| john      | smith    | nw   |           1 | 40000.0000 |
+| diw       | bd       | mum  |           3 | 80000.0000 |
++-----------+----------+------+-------------+------------+
+6 rows in set (0.00 sec)
+
+alternative  using over and partition
+
+mysql> select firstname ,lastname,city, count(city) over(partition by city) as total,
+    -> avg(salary) over(partition by city) as avg_sal
+    -> from emp;
++-----------+----------+------+-------+------------+
+| firstname | lastname | city | total | avg_sal    |
++-----------+----------+------+-------+------------+
+| md        | dh       | mum  |     3 | 80000.0000 |
+| vb        | gw       | mum  |     3 | 80000.0000 |
+| diw       | bd       | mum  |     3 | 80000.0000 |
+| pav       | khi      | nsk  |     1 | 70000.0000 |
+| john      | smith    | nw   |     1 | 40000.0000 |
+| ch        | jd       | pune |     1 | 73000.0000 |
++-----------+----------+------+-------+------------+
+6 rows in set (0.00 sec)
+
+==================================================================
+
+Row number:
+1.we should be using order by clause
+2.we can also try to use partition by - optional
+3.the row no start with 1 for every partion.
+
+top 5th salary
+
+mysql> select firstname ,lastname,salary ,  row_number() over(order by salary desc) as top_sal from emp;
++-----------+----------+--------+---------+
+| firstname | lastname | salary | top_sal |
++-----------+----------+--------+---------+
+| vb        | gw       |  90000 |       1 |
+| md        | dh       |  75000 |       2 |
+| diw       | bd       |  75000 |       3 |
+| ch        | jd       |  73000 |       4 |
+| pav       | khi      |  70000 |       5 |
+| john      | smith    |  40000 |       6 |
++-----------+----------+--------+---------+
+6 rows in set (0.00 sec)
+
+mysql> select * from (
+    -> select firstname ,lastname,salary ,  row_number() over(order by salary desc) as top_sal from emp)
+    -> temptable where top_sal = 5;
++-----------+----------+--------+---------+
+| firstname | lastname | salary | top_sal |
++-----------+----------+--------+---------+
+| pav       | khi      |  70000 |       5 |
++-----------+----------+--------+---------+
+1 row in set (0.00 sec)
+
+
+top 3 salary 
+mysql> select * from ( select firstname ,lastname,salary ,  row_number() over(order by salary desc) as top_sal from emp)  temptable limit 3;
++-----------+----------+--------+---------+
+| firstname | lastname | salary | top_sal |
++-----------+----------+--------+---------+
+| vb        | gw       |  90000 |       1 |
+| md        | dh       |  75000 |       2 |
+| diw       | bd       |  75000 |       3 |
++-----------+----------+--------+---------+
+3 rows in set (0.00 sec)
+
+and this data partion by city 
+
+mysql> select firstname ,lastname,salary ,city,  row_number() over(partition
+by city order by salary desc) as top_sal from emp;
++-----------+----------+--------+------+---------+
+| firstname | lastname | salary | city | top_sal |
++-----------+----------+--------+------+---------+
+| vb        | gw       |  90000 | mum  |       1 |
+| md        | dh       |  75000 | mum  |       2 |
+| diw       | bd       |  75000 | mum  |       3 |
+| pav       | khi      |  70000 | nsk  |       1 |
+| john      | smith    |  40000 | nw   |       1 |
+| ch        | jd       |  73000 | pune |       1 |
++-----------+----------+--------+------+---------+
+6 rows in set (0.00 sec)
+
+
+i want to find hightest salary in each city
+
+mysql> select *  from(  select firstname ,lastname,salary , city, row_number(
+) over(partition by city order by salary desc) as top_sal from emp) temptable
+ where top_sal =1;
++-----------+----------+--------+------+---------+
+| firstname | lastname | salary | city | top_sal |
++-----------+----------+--------+------+---------+
+| vb        | gw       |  90000 | mum  |       1 |
+| pav       | khi      |  70000 | nsk  |       1 |
+| john      | smith    |  40000 | nw   |       1 |
+| ch        | jd       |  73000 | pune |       1 |
++-----------+----------+--------+------+---------+
+4 rows in set (0.00 sec)
+
+=======================================================================
+RANK and DESE RANK
+
+row no not solve problem of Duplicates  here we have duplicate
+mysql> select firstname ,lastname,salary ,  row_number() over(order by salary desc) as top_sal from emp;
++-----------+----------+--------+---------+
+| firstname | lastname | salary | top_sal |
++-----------+----------+--------+---------+
+| vb        | gw       |  90000 |       1 |
+| md        | dh       |  75000 |       2 |
+| diw       | bd       |  75000 |       3 |
+| ch        | jd       |  73000 |       4 |
+| pav       | khi      |  70000 |       5 |
+| john      | smith    |  40000 |       6 |
++-----------+----------+--------+---------+
+6 rows in set (0.00 sec)
+
+
+the rank it will assign rank same if salary is same see diff in above
+in rank we may miss some order next entry skips ranks
+
+mysql> select firstname ,lastname,salary , city, rank() over(order by salary)from emp;
++-----------+----------+--------+------+------------------------------+
+| firstname | lastname | salary | city | rank() over(order by salary) |
++-----------+----------+--------+------+------------------------------+
+| john      | smith    |  40000 | nw   |                            1 |
+| pav       | khi      |  70000 | nsk  |                            2 |
+| ch        | jd       |  73000 | pune |                            3 |
+| md        | dh       |  75000 | mum  |                            4 |
+| diw       | bd       |  75000 | mum  |                            4 |
+| vb        | gw       |  90000 | mum  |                            6 |
++-----------+----------+--------+------+------------------------------+
+6 rows in set (0.00 sec)
+
+
+but in dense_rank order are proper
+
+mysql> select firstname ,lastname,salary , city, dense_rank() over(order by salary)from emp;
++-----------+----------+--------+------+------------------------------------+
+| firstname | lastname | salary | city | dense_rank() over(order by salary) |
++-----------+----------+--------+------+------------------------------------+
+| john      | smith    |  40000 | nw   |                                  1 |
+| pav       | khi      |  70000 | nsk  |                                  2 |
+| ch        | jd       |  73000 | pune |                                  3 |
+| md        | dh       |  75000 | mum  |                                  4 |
+| diw       | bd       |  75000 | mum  |                                  4 |
+| vb        | gw       |  90000 | mum  |                                  5 |
++-----------+----------+--------+------+------------------------------------+
+6 rows in set (0.00 sec)
+
+
+if dataset not duplicat then rowno(),rank(),dense_rank() give same result
+
+top 3dr salary 
+mysql> select * from ( select firstname ,lastname,salary , city, dense_rank()
+ over(order by salary) as top_sal from emp)as temptable where top_sal =3;
++-----------+----------+--------+------+---------+
+| firstname | lastname | salary | city | top_sal |
++-----------+----------+--------+------+---------+
+| ch        | jd       |  73000 | pune |       3 |
++-----------+----------+--------+------+---------+
+1 row in set (0.00 sec)
+
+temptable ----> this is derived table
+
+
+====================================================================================================
+Order of ececution in sql
+
+
+cluster index 
+----we have only one cluster index (may be 2 coposite)--this mean it will retive 1 if record not found then retrive 2nd
+    but in same table two field cluster index not possible
+
+non-cluster index
+----we can make many non-cluster index it is storing data data in some memory we can take reference from that and direct 
+    fetch the data using ref.
+    it may take extra overhead because we are checking in data in memory
+    see in snapshot 
+
+explain
+-----
+
+
+
+common table expression(CTE/WITH clause)
+----for readable code

@@ -474,3 +474,2272 @@ mysql> select * from emp;
 2 rows in set (0.00 sec)
 --------------------------------------------------------------
 
+
+Using username "ubuntu".
+Authenticating with public key "imported-openssh-key"
+Welcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-1016-aws x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Mon Sep 23 08:38:25 UTC 2024
+
+  System load:  0.0               Processes:             113
+  Usage of /:   36.9% of 6.71GB   Users logged in:       1
+  Memory usage: 58%               IPv4 address for enX0: 172.31.15.116
+  Swap usage:   0%
+
+ * Ubuntu Pro delivers the most comprehensive open source security and
+   compliance features.
+
+   https://ubuntu.com/aws/pro
+
+Expanded Security Maintenance for Applications is not enabled.
+
+96 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+Last login: Mon Sep 23 07:14:49 2024 from 103.171.208.25
+ubuntu@ip-172-31-15-116:~$ sudo su
+root@ip-172-31-15-116:/home/ubuntu# mysql
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 10
+Server version: 8.0.39-0ubuntu0.24.04.2 (Ubuntu)
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+mysql> show tables;
+ERROR 1046 (3D000): No database selected
+mysql> use comapany
+ERROR 1049 (42000): Unknown database 'comapany'
+mysql> use company
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++-------------------+
+| Tables_in_company |
++-------------------+
+| courses           |
+| demo              |
+| emp               |
+| student           |
++-------------------+
+4 rows in set (0.00 sec)
+
+mysql> desc courses;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| id        | int         | NO   | PRI | NULL    |       |
+| cname     | varchar(30) | NO   |     | NULL    |       |
+| cduration | int         | NO   |     | NULL    |       |
+| fee       | int         | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> alter table courses cduration decima(3,1) not null ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'cduration decima(3,1) not null' at line 1
+mysql> alter table courses cduration decimal(3,1) not null ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'cduration decimal(3,1) not null' at line 1
+mysql> alter table courses set cduration decimal(3,1) not null ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'set cduration decimal(3,1) not null' at line 1
+mysql>
+mysql>
+mysql>
+mysql> alter table courses modify cduration decimal(3,1) not null ;
+Query OK, 4 rows affected (0.14 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> desc courses;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| id        | int          | NO   | PRI | NULL    |       |
+| cname     | varchar(30)  | NO   |     | NULL    |       |
+| cduration | decimal(3,1) | NO   |     | NULL    |       |
+| fee       | int          | NO   |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> update courses set cduration =3.5 where cname = 'bigdata';
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> select * from courses ;
++----+-----------------+-----------+-------+
+| id | cname           | cduration | fee   |
++----+-----------------+-----------+-------+
+|  1 | big_data        |       3.0 | 50000 |
+|  2 | web_development |       3.0 | 30000 |
+|  3 | data_science    |       4.0 | 40000 |
+|  4 | devops          |       4.0 | 10000 |
++----+-----------------+-----------+-------+
+4 rows in set (0.00 sec)
+
+mysql> update courses set cduration =3.5 where cname = 'big_data';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from courses ;
++----+-----------------+-----------+-------+
+| id | cname           | cduration | fee   |
++----+-----------------+-----------+-------+
+|  1 | big_data        |       3.5 | 50000 |
+|  2 | web_development |       3.0 | 30000 |
+|  3 | data_science    |       4.0 | 40000 |
+|  4 | devops          |       4.0 | 10000 |
++----+-----------------+-----------+-------+
+4 rows in set (0.00 sec)
+
+mysql> drop courses;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'courses' at line 1
+mysql> drop table courses;
+ERROR 3730 (HY000): Cannot drop table 'courses' referenced by a foreign key constraint 'student_ibfk_1' on table 'student'.
+mysql>
+mysql>
+mysql> create table courses_new(
+    -> id int not null,
+    -> cname varchar(30) not null,
+    -> cduration decimal(3.2) not null,
+    -> cfees int not null,
+    -> change_at TIMESTAMP DEFAULT NOW(),
+    -> primary key(id));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> insert into courses_new (id,cname,cduration,cfees)value
+    -> (1,'big_data', 5.5,60000),
+    -> (2,'cloud', 3.5,40000),
+    -> (3,'web_dev',2.5,25000),
+    -> (4,'devops',2,20000));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 5
+mysql> insert into courses_new (id,cname,cduration,cfees)value
+    -> (1,'big_data', 5.5,60000),
+    -> (2,'cloud', 3.5,40000),
+    -> (3,'web_dev',2.5,25000),
+    -> (4,'devops',2.0,20000));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 5
+mysql> insert into courses_new (id,cname,cduration,cfees)values
+    -> (1,'big_data', 5.5,60000),
+    -> (2,'cloud', 3.5,40000),
+    -> (3,'web_dev',2.5,25000),
+    -> (4,'devops',2,20000));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 5
+mysql> insert into courses_new (id,cname,cduration,cfees)values
+    -> (1,'big_data', 5.5,60000),
+    -> (2,'cloud', 3.5,40000),
+    -> (3,'web_dev',2.5,25000),
+    -> (4,'devops',2,20000);
+Query OK, 4 rows affected, 3 warnings (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 3
+
+mysql> select * from courses_new;
++----+----------+-----------+-------+---------------------+
+| id | cname    | cduration | cfees | change_at           |
++----+----------+-----------+-------+---------------------+
+|  1 | big_data |         6 | 60000 | 2024-09-23 08:54:59 |
+|  2 | cloud    |         4 | 40000 | 2024-09-23 08:54:59 |
+|  3 | web_dev  |         3 | 25000 | 2024-09-23 08:54:59 |
+|  4 | devops   |         2 | 20000 | 2024-09-23 08:54:59 |
++----+----------+-----------+-------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> alter
+    -> courses_new modify change_at timestamp default now() on update now();
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'courses_new modify change_at timestamp default now() on update now()' at line 2
+mysql> ALTER TABLE courses_new MODIFY change_at TIMESTAMP DEFAULT NOW() ON UPDATE NOW();
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> insert into courses_new (id,cname,cduration,cfees)values
+    -> (4,'data_science',2,24000);
+ERROR 1062 (23000): Duplicate entry '4' for key 'courses_new.PRIMARY'
+mysql> insert into courses_new (id,cname,cduration,cfees)values
+    -> (5,'data_science',2,24000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from courses_new;
++----+--------------+-----------+-------+---------------------+
+| id | cname        | cduration | cfees | change_at           |
++----+--------------+-----------+-------+---------------------+
+|  1 | big_data     |         6 | 60000 | 2024-09-23 08:54:59 |
+|  2 | cloud        |         4 | 40000 | 2024-09-23 08:54:59 |
+|  3 | web_dev      |         3 | 25000 | 2024-09-23 08:54:59 |
+|  4 | devops       |         2 | 20000 | 2024-09-23 08:54:59 |
+|  5 | data_science |         2 | 24000 | 2024-09-23 09:06:26 |
++----+--------------+-----------+-------+---------------------+
+5 rows in set (0.00 sec)
+
+mysql>
+mysql> select * from student ;
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email               | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+4 rows in set (0.00 sec)
+
+mysql> select * from student \G
+*************************** 1. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+*************************** 2. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: thane
+  selected_course: 1
+*************************** 3. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+*************************** 4. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+4 rows in set (0.00 sec)
+
+mysql> select * from student where location = "mum";
++----+-------+-------+-------+-------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email             | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+-------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+-------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+1 row in set (0.00 sec)
+
+mysql> select * from student where location != "mum";
++----+-------+-------+-------+---------------------+------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email               | ph_no      | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+---------------------+------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031 | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512 | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224  | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |
++----+-------+-------+-------+---------------------+------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from student where location != "mum" \G
+*************************** 1. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+*************************** 2. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: thane
+  selected_course: 1
+*************************** 3. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+3 rows in set (0.00 sec)
+
+mysql> select * from student where location = "mum" \G
+*************************** 1. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+1 row in set (0.01 sec)
+
+mysql> select * from student where location like %m% \G
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%m%' at line 1
+mysql> select * from student where location like '%m%' \G
+*************************** 1. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+1 row in set (0.00 sec)
+
+mysql> select * from student where location like '%n%' \G
+*************************** 1. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+*************************** 2. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: thane
+  selected_course: 1
+*************************** 3. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+3 rows in set (0.00 sec)
+
+mysql> select * from student where years_of_exp >3 ;
++----+-------+-------+-------+-------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email             | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+-------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+-------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+1 row in set (0.00 sec)
+
+mysql> select * from student where years_of_exp >3  and location = 'mum';
++----+-------+-------+-------+-------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email             | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+-------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+-------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+1 row in set (0.00 sec)
+
+mysql> select * from student where years_of_exp >3  and location = 'mum'
+    -> \G
+*************************** 1. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+1 row in set (0.00 sec)
+
+mysql> select * from student where years_of_exp >1 or years_of_exp <3 ;
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email               | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+4 rows in set (0.00 sec)
+
+mysql> select * from student where years_of_exp >2 or years_of_exp <3 ;
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email               | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+4 rows in set (0.00 sec)
+
+mysql> select * from student where years_of_exp between 3 and 4;
++----+-------+-------+-------+--------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email              | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+--------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com  | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+--------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from student where years_of_exp not  between 3 and 4;
++----+-------+-------+-------+---------------------+------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email               | ph_no      | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+---------------------+------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031 | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224  | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |
++----+-------+-------+-------+---------------------+------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+2 rows in set (0.00 sec)
+
+mysql>
+mysql>
+mysql>
+mysql>
+mysql> select * from student where years_of_exp not  between 3 and 4;
++----+-------+-------+-------+---------------------+------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email               | ph_no      | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+---------------------+------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031 | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224  | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |
++----+-------+-------+-------+---------------------+------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from student where years_of_exp   between 3 and 4;
++----+-------+-------+-------+--------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email              | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+--------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com  | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+--------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+2 rows in set (0.00 sec)
+
+mysql>
+mysql>
+mysql> select * from student ;
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email               | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+4 rows in set (0.01 sec)
+
+mysql> select * from student where location in('thane','pune','mum');
++----+-------+-------+-------+--------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email              | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+--------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com  | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com  | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+--------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+3 rows in set (0.00 sec)
+
+mysql>
+
+
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+               id: 3
+            cname: web_dev
+        cduration: 3
+            cfees: 25000
+        change_at: 2024-09-23 08:54:59
+*************************** 4. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+               id: 4
+            cname: devops
+        cduration: 2
+            cfees: 20000
+        change_at: 2024-09-23 08:54:59
+*************************** 5. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+               id: 5
+            cname: data_science
+        cduration: 2
+            cfees: 24000
+        change_at: 2024-09-23 09:06:26
+5 rows in set (0.00 sec)
+
+mysql> select * from student as s join courses_new as c on s.selected_course
+= c.id  \G
+*************************** 1. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+               id: 1
+            cname: big_data
+        cduration: 6
+            cfees: 60000
+        change_at: 2024-09-23 08:54:59
+*************************** 2. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: thane
+  selected_course: 1
+               id: 1
+            cname: big_data
+        cduration: 6
+            cfees: 60000
+        change_at: 2024-09-23 08:54:59
+*************************** 3. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+               id: 1
+            cname: big_data
+        cduration: 6
+            cfees: 60000
+        change_at: 2024-09-23 08:54:59
+*************************** 4. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+               id: 1
+            cname: big_data
+        cduration: 6
+            cfees: 60000
+        change_at: 2024-09-23 08:54:59
+4 rows in set (0.00 sec)
+
+mysql> select * from student as s join courses_new as c on s.selected_course
+= c.id;
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+----+----------+-----------+-------+---------------------+
+| id | fname | mname | lname | email               | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course | id | cname    | cduration | cfees | change_at           |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+----+----------+-----------+-------+---------------------+
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |  1 | big_data |         6 | 60000 | 2024-09-23 08:54:59 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |  1 | big_data |         6 | 60000 | 2024-09-23 08:54:59 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |  1 | big_data |         6 | 60000 | 2024-09-23 08:54:59 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |  1 | big_data |         6 | 60000 | 2024-09-23 08:54:59 |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+----+----------+-----------+-------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> select s.fname, c.cname from student as s join courses_new as c on s.selected_course = c.id;
++-------+----------+
+| fname | cname    |
++-------+----------+
+| pav   | big_data |
+| md    | big_data |
+| ch    | big_data |
+| vb    | big_data |
++-------+----------+
+4 rows in set (0.00 sec)
+
+mysql>
+mysql> create table student_new as select * from student;
+Query OK, 4 rows affected (0.05 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> desc student_new
+    -> ;
++-------------------+-------------+------+-----+---------+-------+
+| Field             | Type        | Null | Key | Default | Extra |
++-------------------+-------------+------+-----+---------+-------+
+| id                | int         | NO   |     | 0       |       |
+| fname             | varchar(30) | NO   |     | NULL    |       |
+| mname             | varchar(20) | YES  |     | NULL    |       |
+| lname             | varchar(20) | NO   |     | NULL    |       |
+| email             | varchar(30) | NO   |     | NULL    |       |
+| ph_no             | varchar(15) | NO   |     | NULL    |       |
+| alternative_ph_no | varchar(15) | YES  |     | NULL    |       |
+| enrollment_date   | varchar(30) | YES  |     | NULL    |       |
+| years_of_exp      | int         | NO   |     | NULL    |       |
+| company_name      | varchar(40) | YES  |     | NULL    |       |
+| batch_data        | varchar(20) | NO   |     | NULL    |       |
+| source_of_joining | varchar(20) | NO   |     | NULL    |       |
+| location          | varchar(30) | NO   |     | NULL    |       |
+| selected_course   | int         | NO   |     | 1       |       |
++-------------------+-------------+------+-----+---------+-------+
+14 rows in set (0.00 sec)
+
+mysql> select * from  student_new;
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email               | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+4 rows in set (0.00 sec)
+
+mysql> select * from  student_new \G
+*************************** 1. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+*************************** 2. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: thane
+  selected_course: 1
+*************************** 3. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+*************************** 4. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+4 rows in set (0.00 sec)
+
+mysql> select * from  student_new \G
+*************************** 1. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+*************************** 2. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: thane
+  selected_course: 1
+*************************** 3. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+*************************** 4. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+4 rows in set (0.00 sec)
+
+mysql>
+mysql> select * from  coureses_new;
+ERROR 1146 (42S02): Table 'company.coureses_new' doesn't exist
+mysql> show tablesl
+    -> show tables;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'tablesl
+show tables' at line 1
+mysql> show table
+    -> s;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 's' at line 2
+mysql> show tables;
++-------------------+
+| Tables_in_company |
++-------------------+
+| courses           |
+| courses_new       |
+| demo              |
+| emp               |
+| student           |
+| student_new       |
++-------------------+
+6 rows in set (0.00 sec)
+
+mysql> select * from courses_new;
++----+--------------+-----------+-------+---------------------+
+| id | cname        | cduration | cfees | change_at           |
++----+--------------+-----------+-------+---------------------+
+|  1 | big_data     |         6 | 60000 | 2024-09-23 08:54:59 |
+|  2 | cloud        |         4 | 40000 | 2024-09-23 08:54:59 |
+|  3 | web_dev      |         3 | 25000 | 2024-09-23 08:54:59 |
+|  4 | devops       |         2 | 20000 | 2024-09-23 08:54:59 |
+|  5 | data_science |         2 | 24000 | 2024-09-23 09:06:26 |
++----+--------------+-----------+-------+---------------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from  student_new \G
+*************************** 1. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+*************************** 2. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: thane
+  selected_course: 1
+*************************** 3. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+*************************** 4. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+4 rows in set (0.00 sec)
+
+mysql> select s.fname, c.cname from student as s right join courses_new as c
+on s.selected_course = c.id;
++-------+--------------+
+| fname | cname        |
++-------+--------------+
+| vb    | big_data     |
+| ch    | big_data     |
+| md    | big_data     |
+| pav   | big_data     |
+| NULL  | cloud        |
+| NULL  | web_dev      |
+| NULL  | devops       |
+| NULL  | data_science |
++-------+--------------+
+8 rows in set (0.01 sec)
+
+mysql> select s.fname, c.cname from student as s left join courses_new as c o
+n s.selected_course = c.id;
++-------+----------+
+| fname | cname    |
++-------+----------+
+| pav   | big_data |
+| md    | big_data |
+| ch    | big_data |
+| vb    | big_data |
++-------+----------+
+4 rows in set (0.00 sec)
+
+mysql>
+mysql>
+mysql> select * from  student_new ;
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email               | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+4 rows in set (0.00 sec)
+
+mysql>
+mysql> select s.fname, c.cname from student as s right join courses_new as c
+on s.selected_course = c.id union select s.fname, c.cname from student as s left join courses_new as c o
+    -> n s.selected_course = c.id;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'o
+n s.selected_course = c.id' at line 1
+mysql>
+mysql>
+mysql> select s.fname, c.cname from student as s left join courses_new as c on s.selected_course = c.id
+    -> union
+    -> select s.fname, c.cname from student as s right join courses_new as c on s.selected_course = c.id;
++-------+--------------+
+| fname | cname        |
++-------+--------------+
+| pav   | big_data     |
+| md    | big_data     |
+| ch    | big_data     |
+| vb    | big_data     |
+| NULL  | cloud        |
+| NULL  | web_dev      |
+| NULL  | devops       |
+| NULL  | data_science |
++-------+--------------+
+8 rows in set (0.00 sec)
+
+mysql>
+mysql> select * from student, courses_new;
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+----+--------------+-----------+-------+---------------------+
+| id | fname | mname | lname | email               | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course | id | cname        | cduration | cfees | change_at           |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+----+--------------+-----------+-------+---------------------+
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |  1 | big_data     |         6 | 60000 | 2024-09-23 08:54:59 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |  1 | big_data     |         6 | 60000 | 2024-09-23 08:54:59 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |  1 | big_data     |         6 | 60000 | 2024-09-23 08:54:59 |
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |  1 | big_data     |         6 | 60000 | 2024-09-23 08:54:59 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |  2 | cloud        |         4 | 40000 | 2024-09-23 08:54:59 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |  2 | cloud        |         4 | 40000 | 2024-09-23 08:54:59 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |  2 | cloud        |         4 | 40000 | 2024-09-23 08:54:59 |
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |  2 | cloud        |         4 | 40000 | 2024-09-23 08:54:59 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |  3 | web_dev      |         3 | 25000 | 2024-09-23 08:54:59 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |  3 | web_dev      |         3 | 25000 | 2024-09-23 08:54:59 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |  3 | web_dev      |         3 | 25000 | 2024-09-23 08:54:59 |
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |  3 | web_dev      |         3 | 25000 | 2024-09-23 08:54:59 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |  4 | devops       |         2 | 20000 | 2024-09-23 08:54:59 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |  4 | devops       |         2 | 20000 | 2024-09-23 08:54:59 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |  4 | devops       |         2 | 20000 | 2024-09-23 08:54:59 |
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |  4 | devops       |         2 | 20000 | 2024-09-23 08:54:59 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |  5 | data_science |         2 | 24000 | 2024-09-23 09:06:26 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |  5 | data_science |         2 | 24000 | 2024-09-23 09:06:26 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |  5 | data_science |         2 | 24000 | 2024-09-23 09:06:26 |
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |  5 | data_science |         2 | 24000 | 2024-09-23 09:06:26 |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+----+--------------+-----------+-------+---------------------+
+20 rows in set (0.00 sec)
+
+mysql> select * from student, courses_new\G
+*************************** 1. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+               id: 1
+            cname: big_data
+        cduration: 6
+            cfees: 60000
+        change_at: 2024-09-23 08:54:59
+*************************** 2. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+               id: 1
+            cname: big_data
+        cduration: 6
+            cfees: 60000
+        change_at: 2024-09-23 08:54:59
+*************************** 3. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: thane
+  selected_course: 1
+               id: 1
+            cname: big_data
+        cduration: 6
+            cfees: 60000
+        change_at: 2024-09-23 08:54:59
+*************************** 4. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+               id: 1
+            cname: big_data
+        cduration: 6
+            cfees: 60000
+        change_at: 2024-09-23 08:54:59
+*************************** 5. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+               id: 2
+            cname: cloud
+        cduration: 4
+            cfees: 40000
+        change_at: 2024-09-23 08:54:59
+*************************** 6. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+               id: 2
+            cname: cloud
+        cduration: 4
+            cfees: 40000
+        change_at: 2024-09-23 08:54:59
+*************************** 7. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: thane
+  selected_course: 1
+               id: 2
+            cname: cloud
+        cduration: 4
+            cfees: 40000
+        change_at: 2024-09-23 08:54:59
+*************************** 8. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+               id: 2
+            cname: cloud
+        cduration: 4
+            cfees: 40000
+        change_at: 2024-09-23 08:54:59
+*************************** 9. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+               id: 3
+            cname: web_dev
+        cduration: 3
+            cfees: 25000
+        change_at: 2024-09-23 08:54:59
+*************************** 10. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+               id: 3
+            cname: web_dev
+        cduration: 3
+            cfees: 25000
+        change_at: 2024-09-23 08:54:59
+*************************** 11. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: thane
+  selected_course: 1
+               id: 3
+            cname: web_dev
+        cduration: 3
+            cfees: 25000
+        change_at: 2024-09-23 08:54:59
+*************************** 12. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+               id: 3
+            cname: web_dev
+        cduration: 3
+            cfees: 25000
+        change_at: 2024-09-23 08:54:59
+*************************** 13. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+               id: 4
+            cname: devops
+        cduration: 2
+            cfees: 20000
+        change_at: 2024-09-23 08:54:59
+*************************** 14. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+               id: 4
+            cname: devops
+        cduration: 2
+            cfees: 20000
+        change_at: 2024-09-23 08:54:59
+*************************** 15. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: thane
+  selected_course: 1
+               id: 4
+            cname: devops
+        cduration: 2
+            cfees: 20000
+        change_at: 2024-09-23 08:54:59
+*************************** 16. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+               id: 4
+            cname: devops
+        cduration: 2
+            cfees: 20000
+        change_at: 2024-09-23 08:54:59
+*************************** 17. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+               id: 5
+            cname: data_science
+        cduration: 2
+            cfees: 24000
+        change_at: 2024-09-23 09:06:26
+*************************** 18. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+               id: 5
+            cname: data_science
+        cduration: 2
+            cfees: 24000
+        change_at: 2024-09-23 09:06:26
+*************************** 19. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: thane
+  selected_course: 1
+               id: 5
+            cname: data_science
+        cduration: 2
+            cfees: 24000
+        change_at: 2024-09-23 09:06:26
+*************************** 20. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+               id: 5
+            cname: data_science
+        cduration: 2
+            cfees: 24000
+        change_at: 2024-09-23 09:06:26
+20 rows in set (0.00 sec)
+
+mysql> select * from student join courses_new
+    -> ;
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+----+--------------+-----------+-------+---------------------+
+| id | fname | mname | lname | email               | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course | id | cname        | cduration | cfees | change_at           |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+----+--------------+-----------+-------+---------------------+
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |  1 | big_data     |         6 | 60000 | 2024-09-23 08:54:59 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |  1 | big_data     |         6 | 60000 | 2024-09-23 08:54:59 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |  1 | big_data     |         6 | 60000 | 2024-09-23 08:54:59 |
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |  1 | big_data     |         6 | 60000 | 2024-09-23 08:54:59 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |  2 | cloud        |         4 | 40000 | 2024-09-23 08:54:59 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |  2 | cloud        |         4 | 40000 | 2024-09-23 08:54:59 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |  2 | cloud        |         4 | 40000 | 2024-09-23 08:54:59 |
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |  2 | cloud        |         4 | 40000 | 2024-09-23 08:54:59 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |  3 | web_dev      |         3 | 25000 | 2024-09-23 08:54:59 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |  3 | web_dev      |         3 | 25000 | 2024-09-23 08:54:59 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |  3 | web_dev      |         3 | 25000 | 2024-09-23 08:54:59 |
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |  3 | web_dev      |         3 | 25000 | 2024-09-23 08:54:59 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |  4 | devops       |         2 | 20000 | 2024-09-23 08:54:59 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |  4 | devops       |         2 | 20000 | 2024-09-23 08:54:59 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |  4 | devops       |         2 | 20000 | 2024-09-23 08:54:59 |
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |  4 | devops       |         2 | 20000 | 2024-09-23 08:54:59 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |  5 | data_science |         2 | 24000 | 2024-09-23 09:06:26 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |  5 | data_science |         2 | 24000 | 2024-09-23 09:06:26 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |  5 | data_science |         2 | 24000 | 2024-09-23 09:06:26 |
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |  5 | data_science |         2 | 24000 | 2024-09-23 09:06:26 |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+----+--------------+-----------+-------+---------------------+
+20 rows in set (0.00 sec)
+
+mysql> select count(*) from student;
++----------+
+| count(*) |
++----------+
+|        4 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select count(*) from courses_new
+    -> ;
++----------+
+| count(*) |
++----------+
+|        5 |
++----------+
+1 row in set (0.00 sec)
+
+mysql>
+mysql>
+mysql> select * from student_new;
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+| id | fname | mname | lname | email               | ph_no       | alternative_ph_no | enrollment_date | years_of_exp | company_name | batch_data | source_of_joining | location | selected_course |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+|  1 | pav   | NULL  | khai  | pavansk00@gmail.com | 8055719031  | NULL              | NULL            |            1 | ivy          | 20-09-2024 | youtube           | nsk      |               1 |
+|  2 | md    | NULL  | dh    | dmadhuri@gmail.com  | 8806934512  | NULL              | NULL            |            3 | boa          | 20-08-2024 | facebook          | thane    |               1 |
+|  3 | ch    | NULL  | jd    | chetanj@gmail.com   | 940002224   | NULL              | NULL            |            2 | bf           | 20-07-2024 | intsa             | pune     |               1 |
+|  4 | vb    | NULL  | gw    | vaibhav@gmail.com   | 84232343243 | NULL              | NULL            |            4 | ac           | 20-01-2024 | whatsapp          | mum      |               1 |
++----+-------+-------+-------+---------------------+-------------+-------------------+-----------------+--------------+--------------+------------+-------------------+----------+-----------------+
+4 rows in set (0.00 sec)
+
+mysql> select * from student_new\G
+*************************** 1. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+*************************** 2. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: thane
+  selected_course: 1
+*************************** 3. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+*************************** 4. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+4 rows in set (0.00 sec)
+
+mysql> select years_of_exp ,count(*) from student_new group by years_of_exp;
++--------------+----------+
+| years_of_exp | count(*) |
++--------------+----------+
+|            1 |        1 |
+|            3 |        1 |
+|            2 |        1 |
+|            4 |        1 |
++--------------+----------+
+4 rows in set (0.00 sec)
+
+mysql> select  ,count(*) from student_new group by years_of_exp;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ',count(*) from student_new group by years_of_exp' at line 1
+mysql> update student_new set location = 'mum' where id =2;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from student_new\G
+*************************** 1. row ***************************
+               id: 1
+            fname: pav
+            mname: NULL
+            lname: khai
+            email: pavansk00@gmail.com
+            ph_no: 8055719031
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 1
+     company_name: ivy
+       batch_data: 20-09-2024
+source_of_joining: youtube
+         location: nsk
+  selected_course: 1
+*************************** 2. row ***************************
+               id: 2
+            fname: md
+            mname: NULL
+            lname: dh
+            email: dmadhuri@gmail.com
+            ph_no: 8806934512
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 3
+     company_name: boa
+       batch_data: 20-08-2024
+source_of_joining: facebook
+         location: mum
+  selected_course: 1
+*************************** 3. row ***************************
+               id: 3
+            fname: ch
+            mname: NULL
+            lname: jd
+            email: chetanj@gmail.com
+            ph_no: 940002224
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 2
+     company_name: bf
+       batch_data: 20-07-2024
+source_of_joining: intsa
+         location: pune
+  selected_course: 1
+*************************** 4. row ***************************
+               id: 4
+            fname: vb
+            mname: NULL
+            lname: gw
+            email: vaibhav@gmail.com
+            ph_no: 84232343243
+alternative_ph_no: NULL
+  enrollment_date: NULL
+     years_of_exp: 4
+     company_name: ac
+       batch_data: 20-01-2024
+source_of_joining: whatsapp
+         location: mum
+  selected_course: 1
+4 rows in set (0.00 sec)
+
+mysql> select location ,count(*) from student_new group by location;
++----------+----------+
+| location | count(*) |
++----------+----------+
+| nsk      |        1 |
+| mum      |        2 |
+| pune     |        1 |
++----------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select location ,count(*) from student_new group by location having fname ='md';
+ERROR 1054 (42S22): Unknown column 'fname' in 'having clause'
+mysql> select location ,count(*) from student_new group by location having fname like '%md%';
+ERROR 1054 (42S22): Unknown column 'fname' in 'having clause'
+mysql> select location ,fname, count(*) from student_new group by location ha
+ving fname like '%md%';
+ERROR 1055 (42000): Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'company.student_new.fname' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+mysql>
+mysql>
+mysql>
+mysql> select location ,count(*) from student_new group by location;
++----------+----------+
+| location | count(*) |
++----------+----------+
+| nsk      |        1 |
+| mum      |        2 |
+| pune     |        1 |
++----------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select location ,count(*) as total from student_new group by location
+having total >1;
++----------+-------+
+| location | total |
++----------+-------+
+| mum      |     2 |
++----------+-------+
+1 row in set (0.00 sec)
+
+mysql> select location ,count(*) as total from student_new group by location
+having location = 'mum';
++----------+-------+
+| location | total |
++----------+-------+
+| mum      |     2 |
++----------+-------+
+1 row in set (0.00 sec)
+
+mysql> select location ,count(*) as total from student_new group by location
+having location = 'nsk';
++----------+-------+
+| location | total |
++----------+-------+
+| nsk      |     1 |
++----------+-------+
+1 row in set (0.00 sec)
+
+mysql> select location ,count(*) as total from student_new  where location= 'nsk' group by location;
++----------+-------+
+| location | total |
++----------+-------+
+| nsk      |     1 |
++----------+-------+
+1 row in set (0.00 sec)
+
+mysql> select location ,count(*) as total from student_new  where years_of_exp >2  group by location;
++----------+-------+
+| location | total |
++----------+-------+
+| mum      |     2 |
++----------+-------+
+1 row in set (0.01 sec)
+
+mysql> select location ,count(*) as total from student_new  where years_of_exp >2  group by location;
++----------+-------+
+| location | total |
++----------+-------+
+| mum      |     2 |
++----------+-------+
+1 row in set (0.00 sec)
+
+mysql>
+mysql>
+mysql>
+mysql> select location ,count(*) as total from student_new  where years_of_exp >2  ;
+ERROR 1140 (42000): In aggregated query without GROUP BY, expression #1 of SELECT list contains nonaggregated column 'company.student_new.location'; this is incompatible with sql_mode=only_full_group_by
+mysql> select location as total from student_new  where years_of_exp >2;
++-------+
+| total |
++-------+
+| mum   |
+| mum   |
++-------+
+2 rows in set (0.00 sec)
+
+mysql> select location as total from student_new  where years_of_exp >1;
++-------+
+| total |
++-------+
+| mum   |
+| pune  |
+| mum   |
++-------+
+3 rows in set (0.00 sec)
+
+mysql> select location , count(*) as total from student_new  where years_of_exp >1 group by location;
++----------+-------+
+| location | total |
++----------+-------+
+| mum      |     2 |
+| pune     |     1 |
++----------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select location , count(*) as total from student_new  where years_of_exp >1 group by location having total>1;
++----------+-------+
+| location | total |
++----------+-------+
+| mum      |     2 |
++----------+-------+
+1 row in set (0.00 sec)
+
+mysql> show tables;
++-------------------+
+| Tables_in_company |
++-------------------+
+| courses           |
+| courses_new       |
+| demo              |
+| emp               |
+| student           |
+| student_new       |
++-------------------+
+6 rows in set (0.00 sec)
+
+mysql> select * from emp ;
+Empty set (0.00 sec)
+
+mysql> desc emp ;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| id         | int         | NO   | PRI | NULL    | auto_increment |
+| firstname  | varchar(20) | NO   |     | NULL    |                |
+| middlename | varchar(10) | YES  |     | NULL    |                |
+| lastname   | varchar(10) | NO   |     | NULL    |                |
+| age        | int         | NO   |     | NULL    |                |
+| salary     | int         | NO   |     | NULL    |                |
+| city       | varchar(20) | NO   |     | nsk     |                |
++------------+-------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+mysql> insert into emp (firstname,lastname,age,salary,city)values
+    -> ('pav','khi',29,70000,'nsk'),
+    -> ('md','dh',30,75000,'mum'),
+    -> ('ch','jd',31,73000,'pune'),
+    -> ('vb','gw',90000,'mum'),
+    -> ('john','smith,20000,
+    '> ('john','smith,20000,;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'john','smith,20000,' at line 7
+mysql> insert into emp (firstname,lastname,age,salary,city)values
+    -> ('pav','khi',29,70000,'nsk'),
+    -> ('md','dh',30,75000,'mum'),
+    -> ('vb','gw',32,90000,'mum'),
+    -> ('ch','jd',31,73000,'pune');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> insert into emp (firstname,lastname,age,salary,city)values
+    -> ('john','smith',33,40000,'nw');
+Query OK, 1 row affected (0.01 sec)
+
+mysql>
+mysql> insert into emp (firstname,lastname,age,salary,city)values
+    -> ('diw','bd',30,75000,'mum');
+Query OK, 1 row affected (0.01 sec)
+
+mysql>
+mysql> select city ,count(*) as total from emp group by city;
++------+-------+
+| city | total |
++------+-------+
+| nsk  |     1 |
+| mum  |     3 |
+| pune |     1 |
+| nw   |     1 |
++------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select city ,count(*) as total , avg(sal) from emp group by city;
+ERROR 1054 (42S22): Unknown column 'sal' in 'field list'
+mysql>
+mysql> select city ,count(*) as total , avg(salary) from emp group by city;
++------+-------+-------------+
+| city | total | avg(salary) |
++------+-------+-------------+
+| nsk  |     1 |  70000.0000 |
+| mum  |     3 |  80000.0000 |
+| pune |     1 |  73000.0000 |
+| nw   |     1 |  40000.0000 |
++------+-------+-------------+
+4 rows in set (0.00 sec)
+
+mysql>
+mysql> select firstname, lastname,city ,count(*) as total , avg(salary) from
+emp group by city;
+ERROR 1055 (42000): Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'company.emp.firstname' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+mysql>
+mysql>
+mysql>
+mysql>
+mysql>
+mysql> select firstname, lastname,g.city ,count(*) as total , g.avg_salary
+    -> from emp join
+    -> (select location,;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 3
+mysql> select firstname, lastname,g.city ,total_count , avg_salary
+    -> from emp join
+    -> (select city, count(city) as total_count,avg(salary) as avg_salary from
+    -> emp group by city) g on location= g.location;
+ERROR 1054 (42S22): Unknown column 'location' in 'on clause'
+mysql> SELECT firstname, lastname, g.city, total_count, avg_salary
+    -> FROM emp
+    -> JOIN (
+    ->     SELECT city, COUNT(city) AS total_count, AVG(salary) AS avg_salary
+    ->     FROM emp
+    ->     GROUP BY city
+    -> ) g ON emp.city = g.city;
++-----------+----------+------+-------------+------------+
+| firstname | lastname | city | total_count | avg_salary |
++-----------+----------+------+-------------+------------+
+| pav       | khi      | nsk  |           1 | 70000.0000 |
+| md        | dh       | mum  |           3 | 80000.0000 |
+| vb        | gw       | mum  |           3 | 80000.0000 |
+| ch        | jd       | pune |           1 | 73000.0000 |
+| john      | smith    | nw   |           1 | 40000.0000 |
+| diw       | bd       | mum  |           3 | 80000.0000 |
++-----------+----------+------+-------------+------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT firstname, lastname, g.city, total_count, avg_salary
+    -> FROM emp
+    -> JOIN (
+    ->     SELECT city, COUNT(city) AS total_count, AVG(salary) AS avg_salary
+    ->     FROM emp
+    ->     GROUP BY city
+    -> ) g ON emp.city = g.city;
++-----------+----------+------+-------------+------------+
+| firstname | lastname | city | total_count | avg_salary |
++-----------+----------+------+-------------+------------+
+| pav       | khi      | nsk  |           1 | 70000.0000 |
+| md        | dh       | mum  |           3 | 80000.0000 |
+| vb        | gw       | mum  |           3 | 80000.0000 |
+| ch        | jd       | pune |           1 | 73000.0000 |
+| john      | smith    | nw   |           1 | 40000.0000 |
+| diw       | bd       | mum  |           3 | 80000.0000 |
++-----------+----------+------+-------------+------------+
+6 rows in set (0.00 sec)
+
+mysql>
+mysql> select firstname ,lastname,city, count(city) over(partition by city) as total,
+    -> avg(salary) over(partition by city) as avg_sal
+    -> from emp;
++-----------+----------+------+-------+------------+
+| firstname | lastname | city | total | avg_sal    |
++-----------+----------+------+-------+------------+
+| md        | dh       | mum  |     3 | 80000.0000 |
+| vb        | gw       | mum  |     3 | 80000.0000 |
+| diw       | bd       | mum  |     3 | 80000.0000 |
+| pav       | khi      | nsk  |     1 | 70000.0000 |
+| john      | smith    | nw   |     1 | 40000.0000 |
+| ch        | jd       | pune |     1 | 73000.0000 |
++-----------+----------+------+-------+------------+
+6 rows in set (0.00 sec)
+
+mysql> select firstname ,lastname,
+    -> row_number() over(order by salary) from emp;
++-----------+----------+------------------------------------+
+| firstname | lastname | row_number() over(order by salary) |
++-----------+----------+------------------------------------+
+| john      | smith    |                                  1 |
+| pav       | khi      |                                  2 |
+| ch        | jd       |                                  3 |
+| md        | dh       |                                  4 |
+| diw       | bd       |                                  5 |
+| vb        | gw       |                                  6 |
++-----------+----------+------------------------------------+
+6 rows in set (0.00 sec)
+
+mysql> select firstname ,lastname,salary ,  row_number() over(order by salary
+) from emp;
++-----------+----------+--------+------------------------------------+
+| firstname | lastname | salary | row_number() over(order by salary) |
++-----------+----------+--------+------------------------------------+
+| john      | smith    |  40000 |                                  1 |
+| pav       | khi      |  70000 |                                  2 |
+| ch        | jd       |  73000 |                                  3 |
+| md        | dh       |  75000 |                                  4 |
+| diw       | bd       |  75000 |                                  5 |
+| vb        | gw       |  90000 |                                  6 |
++-----------+----------+--------+------------------------------------+
+6 rows in set (0.00 sec)
+
+mysql> select firstname ,lastname,salary ,  row_number() over(order by salary desc) from emp;
++-----------+----------+--------+-----------------------------------------+
+| firstname | lastname | salary | row_number() over(order by salary desc) |
++-----------+----------+--------+-----------------------------------------+
+| vb        | gw       |  90000 |                                       1 |
+| md        | dh       |  75000 |                                       2 |
+| diw       | bd       |  75000 |                                       3 |
+| ch        | jd       |  73000 |                                       4 |
+| pav       | khi      |  70000 |                                       5 |
+| john      | smith    |  40000 |                                       6 |
++-----------+----------+--------+-----------------------------------------+
+6 rows in set (0.00 sec)
+
+mysql> select firstname ,lastname,salary ,  row_number() over(order by salary desc) as top_sal from emp;
++-----------+----------+--------+---------+
+| firstname | lastname | salary | top_sal |
++-----------+----------+--------+---------+
+| vb        | gw       |  90000 |       1 |
+| md        | dh       |  75000 |       2 |
+| diw       | bd       |  75000 |       3 |
+| ch        | jd       |  73000 |       4 |
+| pav       | khi      |  70000 |       5 |
+| john      | smith    |  40000 |       6 |
++-----------+----------+--------+---------+
+6 rows in set (0.00 sec)
+
+mysql> select * from (select firstname ,lastname,salary ,  row_number() over(order by salary desc) as top_sal from emp) tamptable where top_sak = 5;
+ERROR 1054 (42S22): Unknown column 'top_sak' in 'where clause'
+mysql>
+mysql>
+mysql> select firstname ,lastname,salary ,  row_number() over(order by salary desc) as top_sal from emp;
++-----------+----------+--------+---------+
+| firstname | lastname | salary | top_sal |
++-----------+----------+--------+---------+
+| vb        | gw       |  90000 |       1 |
+| md        | dh       |  75000 |       2 |
+| diw       | bd       |  75000 |       3 |
+| ch        | jd       |  73000 |       4 |
+| pav       | khi      |  70000 |       5 |
+| john      | smith    |  40000 |       6 |
++-----------+----------+--------+---------+
+6 rows in set (0.00 sec)
+
+mysql> select * from (
+    -> select firstname ,lastname,salary ,  row_number() over(order by salary desc) as top_sal from emp)
+    -> temptable where top_sal = 5;
++-----------+----------+--------+---------+
+| firstname | lastname | salary | top_sal |
++-----------+----------+--------+---------+
+| pav       | khi      |  70000 |       5 |
++-----------+----------+--------+---------+
+1 row in set (0.00 sec)
+
+mysql> select * from ( select firstname ,lastname,salary ,  row_number() over(order by salary desc) as top_sal from emp)  temptable where top_sal > 4;
++-----------+----------+--------+---------+
+| firstname | lastname | salary | top_sal |
++-----------+----------+--------+---------+
+| pav       | khi      |  70000 |       5 |
+| john      | smith    |  40000 |       6 |
++-----------+----------+--------+---------+
+2 rows in set (0.00 sec)
+
+mysql> select * from ( select firstname ,lastname,salary ,  row_number() over(order by salary desc) as top_sal from emp)  temptable where top_sal > 4;
++-----------+----------+--------+---------+
+| firstname | lastname | salary | top_sal |
++-----------+----------+--------+---------+
+| pav       | khi      |  70000 |       5 |
+| john      | smith    |  40000 |       6 |
++-----------+----------+--------+---------+
+2 rows in set (0.00 sec)
+
+mysql> select * from ( select firstname ,lastname,salary ,  row_number() over(order by salary desc) as top_sal from emp)  temptable limit 3;
++-----------+----------+--------+---------+
+| firstname | lastname | salary | top_sal |
++-----------+----------+--------+---------+
+| vb        | gw       |  90000 |       1 |
+| md        | dh       |  75000 |       2 |
+| diw       | bd       |  75000 |       3 |
++-----------+----------+--------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select firstname ,lastname,salary ,  row_number() over(partition by city order by salary desc) as top_sal from emp;
++-----------+----------+--------+---------+
+| firstname | lastname | salary | top_sal |
++-----------+----------+--------+---------+
+| vb        | gw       |  90000 |       1 |
+| md        | dh       |  75000 |       2 |
+| diw       | bd       |  75000 |       3 |
+| pav       | khi      |  70000 |       1 |
+| john      | smith    |  40000 |       1 |
+| ch        | jd       |  73000 |       1 |
++-----------+----------+--------+---------+
+6 rows in set (0.00 sec)
+
+mysql> select firstname ,lastname,salary ,city,  row_number() over(partition
+by city order by salary desc) as top_sal from emp;
++-----------+----------+--------+------+---------+
+| firstname | lastname | salary | city | top_sal |
++-----------+----------+--------+------+---------+
+| vb        | gw       |  90000 | mum  |       1 |
+| md        | dh       |  75000 | mum  |       2 |
+| diw       | bd       |  75000 | mum  |       3 |
+| pav       | khi      |  70000 | nsk  |       1 |
+| john      | smith    |  40000 | nw   |       1 |
+| ch        | jd       |  73000 | pune |       1 |
++-----------+----------+--------+------+---------+
+6 rows in set (0.00 sec)
+
+mysql> ^C
+mysql> select * from (select firstname ,lastname,salary ,city,  row_number()
+over(partition by city order by salary desc) as top_sal from emp
+    -> ) top_sal =1;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '=1' at line 2
+mysql>
+mysql>
+mysql>
+mysql> select *  from(
+    ->  select firstname ,lastname,salary ,  row_number() over(partition by city order by salary desc) as top_sal from emp) temptable where top_sal =1;
++-----------+----------+--------+---------+
+| firstname | lastname | salary | top_sal |
++-----------+----------+--------+---------+
+| vb        | gw       |  90000 |       1 |
+| pav       | khi      |  70000 |       1 |
+| john      | smith    |  40000 |       1 |
+| ch        | jd       |  73000 |       1 |
++-----------+----------+--------+---------+
+4 rows in set (0.00 sec)
+
+mysql> select *  from(  select firstname ,lastname,salary , city, row_number(
+) over(partition by city order by salary desc) as top_sal from emp) temptable
+ where top_sal =1;
++-----------+----------+--------+------+---------+
+| firstname | lastname | salary | city | top_sal |
++-----------+----------+--------+------+---------+
+| vb        | gw       |  90000 | mum  |       1 |
+| pav       | khi      |  70000 | nsk  |       1 |
+| john      | smith    |  40000 | nw   |       1 |
+| ch        | jd       |  73000 | pune |       1 |
++-----------+----------+--------+------+---------+
+4 rows in set (0.00 sec)
+
+mysql> select firstname ,lastname,salary , city, rank() over(order by salary)from emp;
++-----------+----------+--------+------+------------------------------+
+| firstname | lastname | salary | city | rank() over(order by salary) |
++-----------+----------+--------+------+------------------------------+
+| john      | smith    |  40000 | nw   |                            1 |
+| pav       | khi      |  70000 | nsk  |                            2 |
+| ch        | jd       |  73000 | pune |                            3 |
+| md        | dh       |  75000 | mum  |                            4 |
+| diw       | bd       |  75000 | mum  |                            4 |
+| vb        | gw       |  90000 | mum  |                            6 |
++-----------+----------+--------+------+------------------------------+
+6 rows in set (0.00 sec)
+
+mysql> select firstname ,lastname,salary , city, dense_rank() over(order by salary)from emp;
++-----------+----------+--------+------+------------------------------------+
+| firstname | lastname | salary | city | dense_rank() over(order by salary) |
++-----------+----------+--------+------+------------------------------------+
+| john      | smith    |  40000 | nw   |                                  1 |
+| pav       | khi      |  70000 | nsk  |                                  2 |
+| ch        | jd       |  73000 | pune |                                  3 |
+| md        | dh       |  75000 | mum  |                                  4 |
+| diw       | bd       |  75000 | mum  |                                  4 |
+| vb        | gw       |  90000 | mum  |                                  5 |
++-----------+----------+--------+------+------------------------------------+
+6 rows in set (0.00 sec)
+
+mysql> select * form (
+    -> select firstname ,lastname,salary , city, dense_rank() over(order by salary) as top_sal from emp)temptable top_sal =3 ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'form (
+select firstname ,lastname,salary , city, dense_rank() over(order by sala' at line 1
+mysql> select * form ( select firstname ,lastname,salary , city, dense_rank() over(order by salary) as top_sal from emp)as temptable top_sal =3;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'form ( select firstname ,lastname,salary , city, dense_rank() over(order by sala' at line 1
+mysql>
+mysql>
+mysql> select * form ( select firstname ,lastname,salary , city, dense_rank() over(order by salary) as top_sal from emp)as temptable where top_sal =3;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'form ( select firstname ,lastname,salary , city, dense_rank() over(order by sala' at line 1
+mysql>
+mysql>
+mysql>
+mysql> select * from ( select firstname ,lastname,salary , city, dense_rank()
+ over(order by salary) as top_sal from emp)as temptable where top_sal =3;
++-----------+----------+--------+------+---------+
+| firstname | lastname | salary | city | top_sal |
++-----------+----------+--------+------+---------+
+| ch        | jd       |  73000 | pune |       3 |
++-----------+----------+--------+------+---------+
+1 row in set (0.00 sec)
+
+mysql>
+mysql>
+mysql> select firstname ,lastname,salary , city, dense_rank() over(partition
+by city order by salary)from emp;
++-----------+----------+--------+------+------------------------------------------------------+
+| firstname | lastname | salary | city | dense_rank() over(partition by city order by salary) |
++-----------+----------+--------+------+------------------------------------------------------+
+| md        | dh       |  75000 | mum  |                                                    1 |
+| diw       | bd       |  75000 | mum  |                                                    1 |
+| vb        | gw       |  90000 | mum  |                                                    2 |
+| pav       | khi      |  70000 | nsk  |                                                    1 |
+| john      | smith    |  40000 | nw   |                                                    1 |
+| ch        | jd       |  73000 | pune |                                                    1 |
++-----------+----------+--------+------+------------------------------------------------------+
+6 rows in set (0.00 sec)
+
+mysql> CREATE TABLE customer (
+    ->     customer_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     firstname VARCHAR(50),
+    ->     lastname VARCHAR(50),
+    ->     email VARCHAR(100),
+    ->     city VARCHAR(50)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE `order` (
+    ->     order_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     order_date DATE,
+    ->     amount DECIMAL(10, 2),
+    ->     customer_id INT
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> explain select firstname ,lastname,salary , city, dense_rank() over(order by salary) as top_sal from emp)temptable top_sal =3 ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')temptable top_sal =3' at line 1
+mysql>
+mysql>
+mysql>
+mysql> select * form ( select firstname ,lastname,salary , city, dense_rank() over(order by salary) as top_sal from emp)temptable top_sal =3;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'form ( select firstname ,lastname,salary , city, dense_rank() over(order by sala' at line 1
+mysql> elect firstname ,lastname,salary , city, rank() over(order by salary)from emp;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'elect firstname ,lastname,salary , city, rank() over(order by salary)from emp' at line 1
+mysql> select firstname ,lastname,salary , city, rank() over(order by salary)from emp;
++-----------+----------+--------+------+------------------------------+
+| firstname | lastname | salary | city | rank() over(order by salary) |
++-----------+----------+--------+------+------------------------------+
+| john      | smith    |  40000 | nw   |                            1 |
+| pav       | khi      |  70000 | nsk  |                            2 |
+| ch        | jd       |  73000 | pune |                            3 |
+| md        | dh       |  75000 | mum  |                            4 |
+| diw       | bd       |  75000 | mum  |                            4 |
+| vb        | gw       |  90000 | mum  |                            6 |
++-----------+----------+--------+------+------------------------------+
+6 rows in set (0.01 sec)
+
+mysql> explain select firstname ,lastname,salary , city, rank() over(order by
+ salary)from emp;
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+----------------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra          |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+----------------+
+|  1 | SIMPLE      | emp   | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    6 |   100.00 | Using filesort |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+----------------+
+1 row in set, 2 warnings (0.00 sec)
+
+mysql> explain select firstname ,lastname,salary , city, rank() over(order by salary)from emp #G
+    -> ;
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+----------------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra          |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+----------------+
+|  1 | SIMPLE      | emp   | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    6 |   100.00 | Using filesort |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+----------------+
+1 row in set, 2 warnings (0.00 sec)
+
+mysql> explain select firstname ,lastname,salary , city, rank() over(order by salary)from emp G
+    -> l
+    -> ^C
+mysql> explain select firstname ,lastname,salary , city, rank() over(order by salary)from emp
+    -> \G
+*************************** 1. row ***************************
+           id: 1
+  select_type: SIMPLE
+        table: emp
+   partitions: NULL
+         type: ALL
+possible_keys: NULL
+          key: NULL
+      key_len: NULL
+          ref: NULL
+         rows: 6
+     filtered: 100.00
+        Extra: Using filesort
+1 row in set, 2 warnings (0.00 sec)
+
+mysql>
+
+
+
