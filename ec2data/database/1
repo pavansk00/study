@@ -1,0 +1,7 @@
+1. Install mysql-connector-python
+First, ensure that the mysql-connector-python package is installed in your virtual environment. You can install it using pip:
+
+pip install mysql-connector-python
+
+
+
